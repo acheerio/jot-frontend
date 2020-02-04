@@ -20,8 +20,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
 import Activities from "./Activities";
-import Contacts from "./Contacts";
-import Tags from "./Tags";
+import Contacts from "./Contacts/Contacts";
+import Tags from "./Tags/Tags";
 
 const drawerWidth = 240;
 
