@@ -19,7 +19,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
-import Activities from "./Activities";
+import Activities from "./Activities/Activities";
 import Contacts from "./Contacts/Contacts";
 import Tags from "./Tags/Tags";
 
