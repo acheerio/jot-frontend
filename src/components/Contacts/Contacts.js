@@ -7,7 +7,8 @@ import ContactTable from "./ContactTable";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import ContactDetail from "./ContactDetail";
+import ContactAdd from "./ContactAdd";
+import ContactEdit from "./ContactEdit";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -26,6 +27,9 @@ export default function Contacts() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  // Code to set currently selected contact:
+  const [selectedContactId, setSelectedContactId] = React.useState(0);
+
   // Code to control which page is shown to user
   let contactViewComponent = null;
   const [contactView, setContactView] = React.useState("ContactFind");
@@ -33,8 +37,17 @@ export default function Contacts() {
     case "ContactFind":
       contactViewComponent = <ContactFind setContactView={setContactView} />;
       break;
-    case "ContactDetail":
-      contactViewComponent = <ContactDetail setContactView={setContactView} />;
+    case "ContactAdd":
+      contactViewComponent = <ContactAdd setContactView={setContactView} />;
+      break;
+    case "ContactEdit":
+      contactViewComponent = (
+        <ContactEdit
+          setContactView={setContactView}
+          selectedContact={selectedContactId}
+          setSelectedContact={setSelectedContactId}
+        />
+      );
       break;
     default:
       contactViewComponent = <h1>No page selected...</h1>;

@@ -1,11 +1,13 @@
 import React from "react";
 import MaterialTable from 'material-table';
+import {Edit} from "@material-ui/icons";
 
-export default function ContactTable() {
+export default function ContactTable(props) {
     return (
         <React.Fragment>
             <MaterialTable
                 columns={[
+                    {title: 'Contact ID', field: 'contactId', hidden: true},
                     {title: 'Name', field: 'firstName'},
                     {title: 'Organization', field: 'organization'},
                     {title: 'Role', field: 'role'},
@@ -16,7 +18,7 @@ export default function ContactTable() {
                 data={query =>
                     new Promise((resolve, reject) => {
                         // let url = 'http://localhost:8080/contacts/all?userId=1&pageNum=0&pageSize=20&sortField=contactId&sortDirection=DESC';
-                        let url = 'http://localhost:8080/contacts/all?'
+                        let url = 'http://localhost:5000/contacts/all?'
                         // let url = 'http://api.jot-app.com/contacts?'
                         url += 'userId=1';
                         url += '&sortField=contactId';
@@ -36,6 +38,13 @@ export default function ContactTable() {
                             })
                     })
                 }
+                actions={[
+                  {
+                    icon: Edit,
+                    tooltip: 'Save User',
+                    onClick: (event, rowData) => alert("You saved " + rowData.firstName + ", contactId: " + rowData.contactId)
+                  }
+                ]}
             />
         </React.Fragment>
     );

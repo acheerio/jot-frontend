@@ -42,7 +42,7 @@ const MenuProps = {
 
 const tags = ["OSU", "GHC", "Capstone", "CS361", "Meetup"];
 
-export default function ContactDetail(props) {
+export default function ContactAdd(props) {
   const classes = useStyles();
   const [selectedTag, setSelectedTag] = React.useState([]);
 
