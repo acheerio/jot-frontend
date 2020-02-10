@@ -61,8 +61,8 @@ export default function ContactTable() {
                         query.orderBy = 'contactId';
                         query.orderDirection = 'desc';
                         // let url = 'http://localhost:8080/contacts/all?userId=1&pageNum=0&pageSize=20&sortField=contactId&sortDirection=DESC';
-                        let url = 'http://localhost:8080/contacts/all?'
-                        // let url = 'http://api.jot-app.com/contacts?'
+                        // let url = 'http://api.jot-app.com/contacts/all?'
+                        let url = 'http://localhost:5000/contacts/all?'
                         url += 'userId=1';
                         url += '&sortField=' + query.orderBy;
                         url += '&sortDirection=' + query.orderDirection;
