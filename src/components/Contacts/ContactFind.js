@@ -116,7 +116,7 @@ export default function ContactFind(props) {
             className={classes.button}
             startIcon={<AddCircleIcon />}
             onClick={() => {
-              props.setContactView("ContactDetail");
+              props.setContactView("ContactAdd");
             }}
           >
             Add New Contact
