@@ -1,80 +1,42 @@
 import React from "react";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-
-// Generate Order Data
-function createData(
-  contactId,
-  name,
-  org,
-  role,
-  updateDate,
-  tags,
-  recentUpdate
-) {
-  return { contactId, name, org, role, updateDate, tags, recentUpdate };
-}
-
-const rows = [
-  createData(
-    0,
-    "Ailish Bateman",
-    "OSU",
-    "Capstone Team Member",
-    "2/1/20",
-    "Student, GHC, Capstone",
-    "Some note example text here"
-  ),
-  createData(
-    1,
-    "Alice O'Herin",
-    "OSU",
-    "Capstone Team Member",
-    "2/1/20",
-    "Student, GHC, Capstone",
-    "Some note example text here"
-  ),
-  createData(
-    2,
-    "Will Darnell",
-    "OSU",
-    "Capstone Team Member",
-    "2/1/20",
-    "Student, GHC, Capstone",
-    "Some note example text here"
-  )
-];
+import MaterialTable from 'material-table';
 
 export default function ContactTable() {
-  return (
-    <React.Fragment>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Org</TableCell>
-            <TableCell>Role</TableCell>
-            <TableCell>Update Date</TableCell>
-            <TableCell>Tags</TableCell>
-            <TableCell>Recent Updates</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.contactId}>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.org}</TableCell>
-              <TableCell>{row.role}</TableCell>
-              <TableCell>{row.updateDate}</TableCell>
-              <TableCell>{row.tags}</TableCell>
-              <TableCell>{row.recentUpdate}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </React.Fragment>
-  );
+    return (
+        <React.Fragment>
+            <MaterialTable
+                columns={[
+                    {title: 'Name', field: 'firstName'},
+                    {title: 'Organization', field: 'organization'},
+                    {title: 'Role', field: 'role'},
+                    {title: 'Update Date', field: 'updateDate'},
+                    {title: 'Tags', field: null},
+                    {title: 'Recent Updates', field: null},
+                ]}
+                data={query =>
+                    new Promise((resolve, reject) => {
+                        // let url = 'http://localhost:8080/contacts/all?userId=1&pageNum=0&pageSize=20&sortField=contactId&sortDirection=DESC';
+                        let url = 'http://localhost:8080/contacts/all?'
+                        // let url = 'http://api.jot-app.com/contacts?'
+                        url += 'userId=1';
+                        url += '&sortField=contactId';
+                        url += '&sortDirection=DESC';
+                        url += '&pageSize=' + query.pageSize;
+                        url += '&pageNum=' + (query.page + 1);
+                        console.log(query);
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(result => {
+                                console.log(result.content)
+                                resolve({
+                                    data: result.content,
+                                    page: result.page - 1,
+                                    totalCount: result.totalElements,
+                                })
+                            })
+                    })
+                }
+            />
+        </React.Fragment>
+    );
 }
