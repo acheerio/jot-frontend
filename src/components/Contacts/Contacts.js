@@ -44,8 +44,7 @@ export default function Contacts() {
       contactViewComponent = (
         <ContactEdit
           setContactView={setContactView}
-          selectedContact={selectedContactId}
-          setSelectedContact={setSelectedContactId}
+          selectedContactId={selectedContactId}
         />
       );
       break;
@@ -63,7 +62,10 @@ export default function Contacts() {
         {/* Contacts */}
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <ContactTable />
+            <ContactTable
+              setSelectedContactId={setSelectedContactId}
+              setContactView={setContactView}
+            />
           </Paper>
         </Grid>
       </Grid>
