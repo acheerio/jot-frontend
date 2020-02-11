@@ -8,6 +8,7 @@ import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
+import { tableRef } from "./ContactTable";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -117,6 +118,7 @@ export default function ContactEdit(props) {
     }
     updateRequest().then(() => {
       props.setContactView("ContactFind");
+      tableRef.current.onQueryChange();
     });
   };
 
@@ -132,6 +134,7 @@ export default function ContactEdit(props) {
     }
     deleteRequest().then(() => {
       props.setContactView("ContactFind");
+      tableRef.current.onQueryChange();
     });
   };
 
