@@ -45,92 +45,131 @@ const tags = ["OSU", "GHC", "Capstone", "CS361", "Meetup"];
 export default function ContactAdd(props) {
   const classes = useStyles();
   const [selectedTag, setSelectedTag] = React.useState([]);
+  const [state, setState] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
+    org: "",
+    phone: "",
+    tags: []
+  });
 
   const handleChange = event => {
-    setSelectedTag(event.target.value);
+    if (event.target.name == 'tags') {
+      console.log("it was a tag!")
+      setSelectedTag(event.target.value);
+    }
+    else {
+      setState({
+        ...state,
+        [event.target.name]: event.target.value
+      });
+    }
   };
 
+  React.useEffect(() => console.log(state), [state]);
+
+  function handleCancel(e) {
+    props.setContactView("ContactFind");
+  }
+  function handleAdd(e) {
+    console.log(state);
+    console.log(JSON.stringify(state))
+    let url = 'http://localhost:5000/contacts/add?';
+    url += 'userId=1';
+    url += '&googleId=fakeGoogleId';
+    url += '&firstName=' + state.firstName;
+    url += '&lastName=' + state.lastName;
+    url += '&emailAddress=' + state.email;
+    url += '&phoneNumber=' + state.phone;
+    url += '&organization=' + state.org;
+    url += '&role=' + state.role;
+  console.log(url)
+    fetch(url, {method: 'post'})
+        .then((response) => {
+          console.log("success2!")
+        })
+        .then((response) => {
+          console.log("success1!")
+        });
+    props.setContactView("ContactFind");
+    /* TODO: HANDLE ATTRIBUTES */
+  }
+
   return (
-    <Grid container spacing={3} className={classes.root}>
-      <Grid container item lg={6} md={6} sm={12} justify="center" spacing={2}>
-        <Grid item xs={12}>
-          <TextField id="firstName" label="First Name" />
+        <Grid container spacing={3} className={classes.root}>
+              <Grid container item lg={6} md={6} sm={12} justify="center" spacing={2}>
+                <Grid item xs={12}>
+                  <TextField id="firstName" label="First Name" name="firstName" onChange={handleChange}/>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField id="lastName" label="Last Name" name="lastName" onChange={handleChange}/>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField id="email" label="Email" name="email" onChange={handleChange}/>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField id="phoneNumber" label="Phone Number" name="phone" onChange={handleChange}/>
+                </Grid>
+              </Grid>
+              <Grid container item lg={6} md={6} sm={12} spacing={2}>
+                <Grid item xs={12}>
+                  <TextField id="organization" label="Organization" name="org" onChange={handleChange}/>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField id="role" label="Role" name="role" onChange={handleChange}/>
+                </Grid>
+                <Grid item xs={12}>
+                  <InputLabel id="demo-mutiple-chip-label">Add Tags</InputLabel>
+                  <Select
+                      name="tags"
+                      labelId="demo-mutiple-chip-label"
+                      id="demo-mutiple-chip"
+                      multiple
+                      value={selectedTag}
+                      onChange={handleChange}
+                      input={<Input id="select-multiple-chip" />}
+                      renderValue={selected => (
+                          <div className={classes.chips}>
+                            {selected.map(value => (
+                                <Chip key={value} label={value} className={classes.chip} />
+                            ))}
+                          </div>
+                      )}
+                      MenuProps={MenuProps}
+                  >
+                    {tags.map(tag => (
+                        <MenuItem key={tag} value={tag}>
+                          {tag}
+                        </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                    type="button"
+                    name="add"
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    className={classes.margin}
+                    onClick={handleAdd}
+                >
+                  Add Contact
+                </Button>
+                <Button
+                    type="button"
+                    name="cancel"
+                    variant="contained"
+                    size="large"
+                    className={classes.margin}
+                    onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+              </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <TextField id="lastName" label="Last Name" />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField id="email" label="Email" />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField id="phoneNumber" label="Phone Number" />
-        </Grid>
-      </Grid>
-      <Grid container item lg={6} md={6} sm={12} spacing={2}>
-        <Grid item xs={12}>
-          <TextField id="organization" label="Organization" />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField id="role" label="Role" />
-        </Grid>
-        <Grid item xs={12}>
-          <InputLabel id="demo-mutiple-chip-label">Add Tags</InputLabel>
-          <Select
-            labelId="demo-mutiple-chip-label"
-            id="demo-mutiple-chip"
-            multiple
-            value={selectedTag}
-            onChange={handleChange}
-            input={<Input id="select-multiple-chip" />}
-            renderValue={selected => (
-              <div className={classes.chips}>
-                {selected.map(value => (
-                  <Chip key={value} label={value} className={classes.chip} />
-                ))}
-              </div>
-            )}
-            MenuProps={MenuProps}
-          >
-            {tags.map(tag => (
-              <MenuItem key={tag} value={tag}>
-                {tag}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-      </Grid>
-      <Grid item xs={4}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          className={classes.margin}
-        >
-          Save Changes
-        </Button>
-      </Grid>
-      <Grid item xs={4}>
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          className={classes.margin}
-        >
-          Delete Contact
-        </Button>
-      </Grid>
-      <Grid item xs={4}>
-        <Button
-          variant="contained"
-          size="small"
-          className={classes.margin}
-          onClick={() => {
-            props.setContactView("ContactFind");
-          }}
-        >
-          Return to Contact Search
-        </Button>
-      </Grid>
-    </Grid>
   );
 }
