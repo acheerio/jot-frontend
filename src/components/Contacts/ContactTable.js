@@ -17,6 +17,9 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
+const endpoint = "http://api.jot-app.com/";
+// const endpoint = "http://localhost:5000/";
+
 const tableIcons = {
   /*
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -65,7 +68,7 @@ export default function ContactTable(props) {
             query.orderBy = "contactId";
             query.orderDirection = "desc";
             // let url = 'http://localhost:8080/contacts/all?userId=1&pageNum=0&pageSize=20&sortField=contactId&sortDirection=DESC';
-            let url = "http://localhost:5000/contacts/all?";
+            let url = endpoint + "contacts/all?";
             // let url = 'http://api.jot-app.com/contacts?'
             url += "userId=1";
             url += "&sortField=" + query.orderBy;

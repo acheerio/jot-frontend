@@ -10,6 +10,9 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
 
+const endpoint = "http://api.jot-app.com/";
+// const endpoint = "http://localhost:5000/";
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -77,7 +80,7 @@ export default function ContactAdd(props) {
   function handleAdd(e) {
     console.log(state);
     console.log(JSON.stringify(state))
-    let url = 'http://localhost:5000/contacts/add?';
+    let url = endpoint + 'contacts/add?';
     url += 'userId=1';
     url += '&googleId=fakeGoogleId';
     url += '&firstName=' + state.firstName;

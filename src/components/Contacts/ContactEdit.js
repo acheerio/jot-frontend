@@ -10,6 +10,9 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
 
+const endpoint = "http://api.jot-app.com/";
+// const endpoint = "http://localhost:5000/";
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -68,7 +71,7 @@ export default function ContactEdit(props) {
     async function fetchData() {
       console.log(props.selectedContactId);
       const response = await fetch(
-        "http://localhost:5000/contacts/" + props.selectedContactId
+        endpoint + "contacts/" + props.selectedContactId
       );
       const data = await response.json();
       setGoogleId(data.googleId);
@@ -86,7 +89,7 @@ export default function ContactEdit(props) {
   const updateContact = () => {
     async function updateRequest() {
       let response = await fetch(
-        "http://localhost:5000/contacts/update/" +
+        endpoint + "contacts/update/" +
           props.selectedContactId +
           "?" +
           "googleId=" +
@@ -126,7 +129,7 @@ export default function ContactEdit(props) {
   const deleteContact = () => {
     async function deleteRequest() {
       let response = await fetch(
-        "http://localhost:5000/contacts/delete/" + props.selectedContactId,
+        endpoint + "contacts/delete/" + props.selectedContactId,
         {
           method: "PUT"
         }
