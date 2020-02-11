@@ -27,6 +27,10 @@ export default function Contacts() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const updateTableOnDataChange = () => {
+    this.forceUpdate();
+  }
+
   // Code to set currently selected contact:
   const [selectedContactId, setSelectedContactId] = React.useState(0);
 
@@ -44,8 +48,8 @@ export default function Contacts() {
       contactViewComponent = (
         <ContactEdit
           setContactView={setContactView}
-          selectedContact={selectedContactId}
-          setSelectedContact={setSelectedContactId}
+          selectedContactId={selectedContactId}
+          updateTableOnDataChange={updateTableOnDataChange}
         />
       );
       break;
@@ -63,7 +67,11 @@ export default function Contacts() {
         {/* Contacts */}
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <ContactTable />
+            <ContactTable
+              selectedContactId={selectedContactId}
+              setSelectedContactId={setSelectedContactId}
+              setContactView={setContactView}
+            />
           </Paper>
         </Grid>
       </Grid>

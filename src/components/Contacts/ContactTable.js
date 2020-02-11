@@ -18,7 +18,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 
 const tableIcons = {
-    /*
+  /*
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
@@ -90,13 +90,10 @@ export default function ContactTable(props) {
           {
             icon: Edit,
             tooltip: "Save User",
-            onClick: (event, rowData) =>
-              alert(
-                "You saved " +
-                  rowData.firstName +
-                  ", contactId: " +
-                  rowData.contactId
-              )
+            onClick: (event, rowData) => {
+              props.setSelectedContactId(rowData.contactId);
+              props.setContactView("ContactEdit");
+            }
           }
         ]}
       />
