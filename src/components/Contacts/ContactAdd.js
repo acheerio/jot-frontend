@@ -56,7 +56,7 @@ export default function ContactAdd(props) {
   });
 
   const handleChange = event => {
-    if (event.target.name == 'tags') {
+    if (event.target.name === 'tags') {
       console.log("it was a tag!")
       setSelectedTag(event.target.value);
     }
