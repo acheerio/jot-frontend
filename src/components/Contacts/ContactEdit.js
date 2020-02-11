@@ -66,7 +66,9 @@ export default function ContactEdit(props) {
   React.useEffect(() => {
     async function fetchData() {
       console.log(props.selectedContactId);
-      const response = await fetch("http://localhost:5000/contacts/" + props.selectedContactId);
+      const response = await fetch(
+        "http://localhost:5000/contacts/" + props.selectedContactId
+      );
       const data = await response.json();
       setGoogleId(data.googleId);
       setFirstName(data.firstName);
@@ -79,40 +81,58 @@ export default function ContactEdit(props) {
     fetchData();
   }, [props.selectedContactId]);
 
-  /*
-  async function getUserAsync(name)
-{
-  let response = await fetch(`https://api.github.com/users/${name}`);
-  let data = await response.json()
-  return data;
-}
-
-getUserAsync('yourUsernameHere')
-  .then(data => console.log(data));
-   */
-
   // Function to update record:
   const updateContact = () => {
     async function updateRequest() {
-      let response = await fetch('http://localhost:5000/contacts/update/' + props.selectedContactId, {
-        method: 'PUT',
-        body: JSON.stringify({
-          googleId: googleId,
-          firstName: firstName,
-          lastName: lastName,
-          emailAddress: email,
-          phoneNumber: phoneNumber,
-          organization: organization,
-          role: role
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
+      let response = await fetch(
+        "http://localhost:5000/contacts/update/" +
+          props.selectedContactId +
+          "?" +
+          "googleId=" +
+          googleId +
+          "&" +
+          "firstName=" +
+          firstName +
+          "&" +
+          "lastName=" +
+          lastName +
+          "&" +
+          "emailAddress=" +
+          email +
+          "&" +
+          "phoneNumber=" +
+          phoneNumber +
+          "&" +
+          "organization=" +
+          organization +
+          "&" +
+          "role=" +
+          role,
+        {
+          method: "PUT"
         }
-      })
+      );
       let data = await response.json();
       return data;
     }
-    updateRequest().then(data => console.log(data));
+    updateRequest().then(() => {
+      props.setContactView("ContactFind");
+    });
+  };
+
+  // Function to update record:
+  const deleteContact = () => {
+    async function deleteRequest() {
+      let response = await fetch(
+        "http://localhost:5000/contacts/delete/" + props.selectedContactId,
+        {
+          method: "PUT"
+        }
+      );
+    }
+    deleteRequest().then(() => {
+      props.setContactView("ContactFind");
+    });
   };
 
   // Function to delete record:
@@ -218,6 +238,11 @@ getUserAsync('yourUsernameHere')
             color="secondary"
             size="small"
             className={classes.margin}
+            onClick={() => {
+              deleteContact();
+              console.log("Deleted contact ");
+              props.setContactView("ContactFind");
+            }}
           >
             Delete Contact
           </Button>
