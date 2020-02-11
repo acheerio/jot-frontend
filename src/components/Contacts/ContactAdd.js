@@ -8,6 +8,7 @@ import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
+import { tableRef } from "./ContactTable";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -88,10 +89,10 @@ export default function ContactAdd(props) {
   console.log(url)
     fetch(url, {method: 'post'})
         .then((response) => {
-          console.log("success2!")
+          tableRef.current && tableRef.current.onQueryChange()
         })
         .then((response) => {
-          console.log("success1!")
+          console.log("success!")
         });
     props.setContactView("ContactFind");
     /* TODO: HANDLE ATTRIBUTES */

@@ -39,11 +39,12 @@ const tableIcons = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />) */
 };
+export let tableRef = React.createRef();
 
 export default function ContactTable(props) {
   return (
     <React.Fragment>
-      <MaterialTable
+      <MaterialTable tableRef={tableRef}
         columns={[
           { title: "Contact ID", field: "contactId", hidden: true },
           { title: "Name", field: "firstName" },
