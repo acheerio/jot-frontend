@@ -14,7 +14,7 @@ function App() {
             <Switch>
                 <Route
                     exact
-                    path={"/"}
+                    path={"/login"}
                     render={props => (
                         <Login
                             {...props}
@@ -24,7 +24,7 @@ function App() {
                 />
                 <Route
                     exact
-                    path={"/dashboard"}
+                    path={"/"}
                     render={props => (
                         <Dashboard
                             {...props}
