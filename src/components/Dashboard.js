@@ -22,6 +22,8 @@ import Typography from "@material-ui/core/Typography";
 import Activities from "./Activities/Activities";
 import Contacts from "./Contacts/Contacts";
 import Tags from "./Tags/Tags";
+import GoogleLogin from "react-google-login";
+import Paper from "@material-ui/core/Paper";
 
 const drawerWidth = 240;
 
@@ -93,6 +95,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+  let clientId = '924098505527-ta2u3pvgjksj497p9lu7rcahkvfoq1vs.apps.googleusercontent.com';
+  const responseGoogle = (response) => {
+    console.log(response);
+  };
 
   // Code to control drawer open and closing
   const [open, setOpen] = React.useState(true);
@@ -150,6 +156,13 @@ export default function Dashboard() {
           >
             Jot
           </Typography>
+          <GoogleLogin
+              clientId={clientId}
+              buttonText="Register or Login with Google  "
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={'single_host_origin'}
+          />
         </Toolbar>
       </AppBar>
       <Drawer
