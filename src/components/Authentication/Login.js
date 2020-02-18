@@ -50,10 +50,12 @@ export default function Login() {
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
         console.log('ID token: ' + googleUser.getAuthResponse().id_token);
-        const id_token = googleUser.getAuthResponse().id_token;
+        const accessToken = googleUser.getAuthResponse().access_token;
+        const idToken = googleUser.getAuthResponse().id_token;
 
         let data = {
-            idTokenString: id_token
+            accessToken: accessToken,
+            idTokenString: idToken
         }
 
         fetch(endpoint, {
@@ -67,10 +69,7 @@ export default function Login() {
             referrerPolicy: 'no-referrer', // no-referrer, *client
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-        })
+        .then((response) => console.log(response))
         .catch((error) => {
             console.log(error);
         });
