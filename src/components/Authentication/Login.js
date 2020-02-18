@@ -27,13 +27,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Login() {
+    let endpoint = 'http://localhost:5000/login'
 
     const classes = useStyles();
 
     useEffect(() => {
 
         gapi.signin2.render('g-signin2', {
-            'scope': 'profile email https://www.googleapis.com/auth/contacts',
+            'scope': 'openid profile email https://www.googleapis.com/auth/contacts',
             'width': 200,
             'height': 50,
             'longtitle': false,
@@ -48,6 +49,31 @@ export default function Login() {
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        console.log('ID token: ' + googleUser.getAuthResponse().id_token);
+        const id_token = googleUser.getAuthResponse().id_token;
+
+        let data = {
+            idTokenString: id_token
+        }
+
+        fetch(endpoint, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            credentials: 'omit', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *client
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     }
 
     return (
