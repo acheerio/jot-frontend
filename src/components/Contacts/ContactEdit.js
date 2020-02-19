@@ -48,8 +48,6 @@ export default function ContactEdit(props) {
   const classes = useStyles();
   const [selectedTags, setSelectedTags] = React.useState([]);
 
-  let attributeMap = new Map();
-
   const handleChange = event => {
     setSelectedTags(event.target.value);
   };

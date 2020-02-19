@@ -10,8 +10,8 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
 
-const endpoint = "http://api.jot-app.com/";
-// const endpoint = "http://localhost:5000/";
+// const endpoint = "http://api.jot-app.com/";
+const endpoint = "http://localhost:5000/";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,11 +44,10 @@ const MenuProps = {
   }
 };
 
-const tags = ["OSU", "GHC", "Capstone", "CS361", "Meetup"];
-
 export default function ContactAdd(props) {
   const classes = useStyles();
-  const [selectedTag, setSelectedTag] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
   const [state, setState] = React.useState({
     firstName: "",
     lastName: "",
@@ -60,11 +59,10 @@ export default function ContactAdd(props) {
   });
 
   const handleChange = event => {
-    if (event.target.name === 'tags') {
-      console.log("it was a tag!")
-      setSelectedTag(event.target.value);
-    }
-    else {
+    if (event.target.name === "tags") {
+      console.log("it was a tag!");
+      setSelectedTags(event.target.value);
+    } else {
       setState({
         ...state,
         [event.target.name]: event.target.value
@@ -72,108 +70,157 @@ export default function ContactAdd(props) {
     }
   };
 
-  React.useEffect(() => console.log(state), [state]);
+  React.useEffect(() => {
+    async function fetchData() {
+      // Get possible tags for user
+      /* TODO: Get userId from somewhere (context?) and use instead of hardcoded id here */
+      const attributesResponse = await fetch(
+        endpoint +
+          "attributes/all?userId=7" +
+          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC"
+      );
+      const attributesData = await attributesResponse.json();
+      let initialAttributes = attributesData.content.map(a => a.title);
+      setTags(initialAttributes);
+    }
+    fetchData();
+  }, []);
 
   function handleCancel(e) {
     props.setContactView("ContactFind");
   }
   function handleAdd(e) {
     console.log(state);
-    console.log(JSON.stringify(state))
-    let url = endpoint + 'contacts/add?';
-    url += 'userId=1';
-    url += '&googleId=fakeGoogleId';
-    url += '&firstName=' + state.firstName;
-    url += '&lastName=' + state.lastName;
-    url += '&emailAddress=' + state.email;
-    url += '&phoneNumber=' + state.phone;
-    url += '&organization=' + state.org;
-    url += '&role=' + state.role;
-  console.log(url)
-    fetch(url, {method: 'post'})
-        .then((response) => {
-          tableRef.current && tableRef.current.onQueryChange()
-        })
-        .then((response) => {
-          console.log("success!")
-        });
+    console.log(JSON.stringify(state));
+    let attributeIdParams = "";
+    selectedTags.forEach(tag => {
+      attributeIdParams += "&attributeTitle=" + tag;
+    });
+    let url = endpoint + "contacts/add?";
+    url += "userId=1";
+    url += "&googleId=fakeGoogleId";
+    url += "&firstName=" + state.firstName;
+    url += "&lastName=" + state.lastName;
+    url += "&emailAddress=" + state.email;
+    url += "&phoneNumber=" + state.phone;
+    url += "&organization=" + state.org;
+    url += "&role=" + state.role;
+    url += attributeIdParams;
+    console.log(url);
+    fetch(url, { method: "post" })
+      .then(response => {
+        tableRef.current && tableRef.current.onQueryChange();
+      })
+      .then(response => {
+        console.log("success!");
+      });
     props.setContactView("ContactFind");
     /* TODO: HANDLE ATTRIBUTES */
   }
 
   return (
-        <Grid container spacing={3} className={classes.root}>
-              <Grid container item lg={6} md={6} sm={12} justify="center" spacing={2}>
-                <Grid item xs={12}>
-                  <TextField id="firstName" label="First Name" name="firstName" onChange={handleChange}/>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField id="lastName" label="Last Name" name="lastName" onChange={handleChange}/>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField id="email" label="Email" name="email" onChange={handleChange}/>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField id="phoneNumber" label="Phone Number" name="phone" onChange={handleChange}/>
-                </Grid>
-              </Grid>
-              <Grid container item lg={6} md={6} sm={12} spacing={2}>
-                <Grid item xs={12}>
-                  <TextField id="organization" label="Organization" name="org" onChange={handleChange}/>
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField id="role" label="Role" name="role" onChange={handleChange}/>
-                </Grid>
-                <Grid item xs={12}>
-                  <InputLabel id="demo-mutiple-chip-label">Add Tags</InputLabel>
-                  <Select
-                      name="tags"
-                      labelId="demo-mutiple-chip-label"
-                      id="demo-mutiple-chip"
-                      multiple
-                      value={selectedTag}
-                      onChange={handleChange}
-                      input={<Input id="select-multiple-chip" />}
-                      renderValue={selected => (
-                          <div className={classes.chips}>
-                            {selected.map(value => (
-                                <Chip key={value} label={value} className={classes.chip} />
-                            ))}
-                          </div>
-                      )}
-                      MenuProps={MenuProps}
-                  >
-                    {tags.map(tag => (
-                        <MenuItem key={tag} value={tag}>
-                          {tag}
-                        </MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                    type="button"
-                    name="add"
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    className={classes.margin}
-                    onClick={handleAdd}
-                >
-                  Add Contact
-                </Button>
-                <Button
-                    type="button"
-                    name="cancel"
-                    variant="contained"
-                    size="large"
-                    className={classes.margin}
-                    onClick={handleCancel}
-                >
-                  Cancel
-                </Button>
-              </Grid>
+    <Grid container spacing={3} className={classes.root}>
+      <Grid container item lg={6} md={6} sm={12} justify="center" spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            id="firstName"
+            label="First Name"
+            name="firstName"
+            onChange={handleChange}
+          />
         </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="lastName"
+            label="Last Name"
+            name="lastName"
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="email"
+            label="Email"
+            name="email"
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="phoneNumber"
+            label="Phone Number"
+            name="phone"
+            onChange={handleChange}
+          />
+        </Grid>
+      </Grid>
+      <Grid container item lg={6} md={6} sm={12} spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            id="organization"
+            label="Organization"
+            name="org"
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="role"
+            label="Role"
+            name="role"
+            onChange={handleChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel id="demo-mutiple-chip-label">Add Tags</InputLabel>
+          <Select
+            name="tags"
+            labelId="demo-mutiple-chip-label"
+            id="demo-mutiple-chip"
+            multiple
+            value={selectedTags}
+            onChange={handleChange}
+            input={<Input id="select-multiple-chip" />}
+            renderValue={selected => (
+              <div className={classes.chips}>
+                {selected.map(value => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )}
+            MenuProps={MenuProps}
+          >
+            {tags.map(tag => (
+              <MenuItem key={tag} value={tag}>
+                {tag}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+      </Grid>
+      <Grid item xs={12}>
+        <Button
+          type="button"
+          name="add"
+          variant="contained"
+          color="primary"
+          size="large"
+          className={classes.margin}
+          onClick={handleAdd}
+        >
+          Add Contact
+        </Button>
+        <Button
+          type="button"
+          name="cancel"
+          variant="contained"
+          size="large"
+          className={classes.margin}
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
