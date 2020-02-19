@@ -10,8 +10,8 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
 
-const endpoint = "http://api.jot-app.com/";
-// const endpoint = "http://localhost:5000/";
+// const endpoint = "http://api.jot-app.com/";
+const endpoint = "http://localhost:5000/";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,10 +46,12 @@ const MenuProps = {
 
 export default function ContactEdit(props) {
   const classes = useStyles();
-  const [selectedTag, setSelectedTag] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState([]);
+
+  let attributeMap = new Map();
 
   const handleChange = event => {
-    setSelectedTag(event.target.value);
+    setSelectedTags(event.target.value);
   };
 
   const [googleId, setGoogleId] = React.useState("");
@@ -59,28 +61,42 @@ export default function ContactEdit(props) {
   const [phoneNumber, setPhoneNumber] = React.useState("");
   const [organization, setOrganization] = React.useState("");
   const [role, setRole] = React.useState("");
-  const [tags, setTags] = React.useState([
-    "OSU",
-    "GHC",
-    "Capstone",
-    "CS361",
-    "Meetup"
-  ]);
+  const [tags, setTags] = React.useState([]);
 
   React.useEffect(() => {
     async function fetchData() {
-      console.log(props.selectedContactId);
-      const response = await fetch(
+      // First get possible tags for user
+      /* TODO: Get userId from somewhere (context?) and use instead of hardcoded id here */
+      const attributesResponse = await fetch(
+        endpoint +
+          "attributes/all?userId=7" +
+          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC"
+      );
+      const attributesData = await attributesResponse.json();
+      let initialAttributes = attributesData.content.map(a => a.title);
+      setTags(initialAttributes);
+
+      // Now get contact info
+      const contactResponse = await fetch(
         endpoint + "contacts/" + props.selectedContactId
       );
-      const data = await response.json();
-      setGoogleId(data.googleId);
-      setFirstName(data.firstName);
-      setLastName(data.lastName);
-      setEmail(data.emailAddress);
-      setPhoneNumber(data.phoneNumber);
-      setOrganization(data.organization);
-      setRole(data.role);
+      const contactData = await contactResponse.json();
+      setGoogleId(contactData.googleId);
+      setFirstName(contactData.firstName);
+      setLastName(contactData.lastName);
+      setEmail(contactData.emailAddress);
+      setPhoneNumber(contactData.phoneNumber);
+      setOrganization(contactData.organization);
+      setRole(contactData.role);
+      // Only add tags to selected array if they are part of user's attributes
+      // Check needed due to test dataset inconsistencies, may not be necessary later
+      let initialSelectedAttributes = [];
+      for (let attribute of contactData.attributes) {
+        if (initialAttributes.includes(attribute.title)) {
+          initialSelectedAttributes.push(attribute.title);
+        }
+      }
+      setSelectedTags(initialSelectedAttributes);
     }
     fetchData();
   }, [props.selectedContactId]);
@@ -88,8 +104,14 @@ export default function ContactEdit(props) {
   // Function to update record:
   const updateContact = () => {
     async function updateRequest() {
+      let attributeIdParams = "";
+      selectedTags.forEach(tag => {
+        attributeIdParams += "&attributeTitle=" + tag;
+      });
+      console.log(attributeIdParams);
       let response = await fetch(
-        endpoint + "contacts/update/" +
+        endpoint +
+          "contacts/update/" +
           props.selectedContactId +
           "?" +
           "googleId=" +
@@ -111,7 +133,8 @@ export default function ContactEdit(props) {
           organization +
           "&" +
           "role=" +
-          role,
+          role +
+          attributeIdParams,
         {
           method: "PUT"
         }
@@ -203,8 +226,9 @@ export default function ContactEdit(props) {
               labelId="demo-mutiple-chip-label"
               id="demo-mutiple-chip"
               multiple
-              value={selectedTag}
+              value={selectedTags}
               onChange={handleChange}
+              onClose={() => {console.log("Selected tags: "); console.log(selectedTags); console.log("All tags: "); console.log(tags);}}
               input={<Input id="select-multiple-chip" />}
               renderValue={selected => (
                 <div className={classes.chips}>

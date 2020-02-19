@@ -54,7 +54,7 @@ export default function ContactTable(props) {
           { title: "Organization", field: "organization" },
           { title: "Role", field: "role" },
           { title: "Update Date", field: "updateDate" },
-          { title: "Tags", field: null },
+          { title: "Tags", field: "attributeDisplay"},
           { title: "Recent Updates", field: "recentActivity" }
         ]}
         icons={tableIcons}
@@ -87,11 +87,16 @@ export default function ContactTable(props) {
                     else {
                         element.recentActivity = null;
                     }
+                    if (element.attributes.length > 0) {
+                      element.attributeList = [];
+                      element.attributes.forEach(e => {element.attributeList.push(e.title)});
+                      element.attributeDisplay = element.attributeList.join(", ");
+                    }
                 });
-                console.log("convert back to json");
+                //console.log("convert back to json");
                 let tableData = JSON.stringify(arr);
-                console.log("conversion completed, json =");
-                console.log(tableData);
+                //console.log("conversion completed, json =");
+                //console.log(tableData);
                 resolve({
                   data: arr,
                   page: result.number,
