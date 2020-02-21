@@ -49,9 +49,10 @@ export default function Login() {
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-        console.log('ID token: ' + googleUser.getAuthResponse().id_token);
-        const accessToken = googleUser.getAuthResponse().access_token;
         const idToken = googleUser.getAuthResponse().id_token;
+        const accessToken = googleUser.getAuthResponse().access_token;
+        console.log('ID token: ' + idToken);
+        console.log('Access token: ' + accessToken);
 
         let data = {
             accessToken: accessToken,
