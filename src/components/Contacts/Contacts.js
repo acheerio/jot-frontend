@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import ContactAdd from "./ContactAdd";
 import ContactEdit from "./ContactEdit";
+import { tableRef } from "./ContactTable";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -29,17 +30,29 @@ export default function Contacts() {
 
   const updateTableOnDataChange = () => {
     this.forceUpdate();
-  }
+  };
 
   // Code to set currently selected contact:
   const [selectedContactId, setSelectedContactId] = React.useState(0);
+
+  // Determine data table route
+  const [apiRoute, setApiRoute] = React.useState("contacts/all?");
+  const refreshTable = ((newRoute) => {
+    setApiRoute(newRoute);
+    tableRef.current.onQueryChange();
+  });
 
   // Code to control which page is shown to user
   let contactViewComponent = null;
   const [contactView, setContactView] = React.useState("ContactFind");
   switch (contactView) {
     case "ContactFind":
-      contactViewComponent = <ContactFind setContactView={setContactView} />;
+      contactViewComponent = (
+        <ContactFind
+          setContactView={setContactView}
+          refreshTable={refreshTable}
+        />
+      );
       break;
     case "ContactAdd":
       contactViewComponent = <ContactAdd setContactView={setContactView} />;
@@ -71,6 +84,8 @@ export default function Contacts() {
               selectedContactId={selectedContactId}
               setSelectedContactId={setSelectedContactId}
               setContactView={setContactView}
+              apiRoute={apiRoute}
+              setApiRoute={setApiRoute}
             />
           </Paper>
         </Grid>

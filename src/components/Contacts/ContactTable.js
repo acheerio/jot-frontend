@@ -47,10 +47,13 @@ export let tableRef = React.createRef();
 export default function ContactTable(props) {
   return (
     <React.Fragment>
-      <MaterialTable tableRef={tableRef}
+      <MaterialTable
+        tableRef={tableRef}
+        title="Contacts"
         columns={[
           { title: "Contact ID", field: "contactId", hidden: true },
-          { title: "Name", field: "firstName" },
+          { title: "First Name", field: "firstName" },
+          { title: "Last Name", field: "lastName" },
           { title: "Organization", field: "organization" },
           { title: "Role", field: "role" },
           { title: "Update Date", field: "updateDate" },
@@ -61,15 +64,14 @@ export default function ContactTable(props) {
         options={{
           pageSize: 5,
           initialPage: 0,
-          defaultSort: "desc"
+          defaultSort: "desc",
+          search: false
         }}
         data={query =>
           new Promise((resolve, reject) => {
             query.orderBy = "contactId";
             query.orderDirection = "asc";
-            // let url = 'http://localhost:8080/contacts/all?userId=1&pageNum=0&pageSize=20&sortField=contactId&sortDirection=DESC';
-            let url = endpoint + "contacts/all?";
-            // let url = 'http://api.jot-app.com/contacts?'
+            let url = endpoint + props.apiRoute;
             url += "userId=2";
             url += "&sortField=" + query.orderBy;
             url += "&sortDirection=" + query.orderDirection;

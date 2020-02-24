@@ -52,6 +52,7 @@ const tags = ["OSU", "GHC", "Capstone", "CS361", "Meetup"];
 export default function ContactFind(props) {
   const classes = useStyles();
   const [selectedTag, setSelectedTag] = React.useState([]);
+  const [searchValue, setSearchValue] = React.useState('');
 
   const handleChange = event => {
     setSelectedTag(event.target.value);
@@ -67,6 +68,7 @@ export default function ContactFind(props) {
               label="Search Contacts"
               variant="outlined"
               size="small"
+              onChange={(e) => {setSearchValue(e.target.value)}}
             />
             <Button
               variant="contained"
@@ -74,6 +76,9 @@ export default function ContactFind(props) {
               size="large"
               className={classes.button}
               startIcon={<SearchIcon />}
+              onClick={() => {
+                props.refreshTable("contacts/searchByName?searchVal=" + searchValue + "&");
+              }}
             >
               Search
             </Button>
