@@ -47,7 +47,8 @@ const MenuProps = {
   }
 };
 
-const tags = ["OSU", "GHC", "Capstone", "CS361", "Meetup"];
+const tags = ["OSU", "Soccer League", "LinkedIn", "WomenWhoCode", "Family", "Taiwan", "High Priority", "Clean Up"];
+const tagsHash = {"OSU": 1, "Soccer League": 2, "LinkedIn": 3, "WomenWhoCode": 4, "Family": 5, "Taiwan": 6, "High Priority": 7, "Clean up": 8}
 
 export default function ContactFind(props) {
   const classes = useStyles();
@@ -56,6 +57,7 @@ export default function ContactFind(props) {
 
   const handleChange = event => {
     setSelectedTag(event.target.value);
+    console.log(selectedTag)
   };
 
   return (
@@ -94,6 +96,19 @@ export default function ContactFind(props) {
               multiple
               value={selectedTag}
               onChange={handleChange}
+              onClick={() => {
+                if (tagsHash[selectedTag[0]] === undefined){
+                  return
+                }
+                else {
+                  let list = []
+                  for (let i = 0; i < selectedTag.length; i++){
+                    list.push(tagsHash[selectedTag[i]])
+                  }
+                  props.refreshTable("contacts/byAttributes?attributeId=" + list + "&");
+
+                }
+              }}
               input={<Input id="select-multiple-chip" />}
               renderValue={selected => (
                 <div className={classes.chips}>

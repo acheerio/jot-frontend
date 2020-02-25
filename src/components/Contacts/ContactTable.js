@@ -82,6 +82,7 @@ export default function ContactTable(props) {
               .then(response => response.json())
               .then(result => {
                 let arr = result.content;
+                console.log(result.content)
                 arr.forEach((element) => {
                     if (element.activities.length > 0) {
                         element.recentActivity = element.activities.slice(-1)[0].notes;
