@@ -124,16 +124,6 @@ export default function Login() {
                                 <Link to="/" label="Dashboard">Dashboard</Link>
                             </Typography>)}
                         </UserContext.Consumer>
-                        <Button
-                            type="button"
-                            name="Logout"
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            onClick={onClickHandler}
-                        >
-                            Logout
-                        </Button>
                     </Paper>
                 </Grid>
             </Grid>
