@@ -10,8 +10,8 @@ import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
 
-// const endpoint = "http://api.jot-app.com/";
-const endpoint = "http://localhost:5000/";
+const endpoint = "http://api.jot-app.com/";
+// const endpoint = "http://localhost:5000/";
 
 const useStyles = makeStyles(theme => ({
   root: {

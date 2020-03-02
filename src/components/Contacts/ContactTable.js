@@ -18,8 +18,8 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import {UserContext} from "../../userContext";
 
-// const endpoint = "http://api.jot-app.com/";
-const endpoint = "http://localhost:5000/";
+const endpoint = "http://api.jot-app.com/";
+// const endpoint = "http://localhost:5000/";
 
 const tableIcons = {
   /*

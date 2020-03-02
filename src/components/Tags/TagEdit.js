@@ -5,6 +5,9 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 
+const endpoint = "http://api.jot-app.com/";
+// const endpoint = "http://localhost:5000/";
+
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
@@ -25,7 +28,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function TagDetail(props) {
+export default function TagAdd(props) {
     const classes = useStyles();
 
     return (
@@ -47,7 +50,7 @@ export default function TagDetail(props) {
                         className={classes.button}
                         startIcon={<AddCircleIcon />}
                     >
-                        Add Tag
+                        Edit Tag
                     </Button>
                 </Grid>
             </Grid>
