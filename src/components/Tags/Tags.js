@@ -33,11 +33,7 @@ export default function Tags() {
       break;
     case "TagEdit":
       tagViewComponent = (
-        <TagEdit
-          setTagView={setTagView}
-          selectedTagId={selectedTagId}
-          // updateTableOnDataChange={updateTableOnDataChange}
-        />
+        <TagEdit setTagView={setTagView} selectedTagId={selectedTagId} />
       );
       break;
     default:
@@ -45,21 +41,22 @@ export default function Tags() {
   }
 
   return (
-      <Container maxWidth="lg" className={classes.container}>
-        <Grid container spacing={3}>
-          {/* Action Area */}
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              {tagViewComponent}
-            </Paper>
-          </Grid>
-          {/* Tags */}
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <TagTable />
-            </Paper>
-          </Grid>
+    <Container maxWidth="lg" className={classes.container}>
+      <Grid container spacing={3}>
+        {/* Action Area */}
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>{tagViewComponent}</Paper>
         </Grid>
-      </Container>
+        {/* Tags */}
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <TagTable
+              setTagView={setTagView}
+              setSelectedTagId={setSelectedTagId}
+            />
+          </Paper>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }

@@ -9,6 +9,7 @@ import MaterialTable from "material-table";
 import Search from "@material-ui/icons/Search";
 import { forwardRef } from "react";
 import {UserContext} from "../../userContext";
+import Edit from "@material-ui/icons/Edit";
 
 const endpoint = "http://api.jot-app.com/";
 // const endpoint = "http://localhost:5000/";
@@ -27,7 +28,7 @@ const tableIcons = {
 };
 export let tableRef = React.createRef();
 
-export default function TagTable() {
+export default function TagTable(props) {
     return (
       <UserContext.Consumer>
           {(value)=>(
@@ -36,7 +37,7 @@ export default function TagTable() {
                   tableRef={tableRef}
                   title="Tags"
                   columns={[
-                      { title: "Contact ID", field: "contactId", hidden: true },
+                      { title: "Attribute ID", field: "attributeId", hidden: true },
                       { title: "Title", field: "title" },
                       { title: "Description", field: "description" },
                       { title: "Update Date", field: "createDate" },
@@ -73,6 +74,16 @@ export default function TagTable() {
                           });
                     })
                   }
+                  actions={[
+                      {
+                          icon: Edit,
+                          tooltip: "Edit or Delete Tag",
+                          onClick: (event, rowData) => {
+                              props.setSelectedTagId(rowData.attributeId);
+                              props.setTagView("TagEdit");
+                          }
+                      }
+                  ]}
                 />
             </React.Fragment>)}
       </UserContext.Consumer>
