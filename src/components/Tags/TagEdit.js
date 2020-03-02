@@ -76,6 +76,22 @@ export default function TagEdit(props) {
       });
   }
 
+  // Function to update record:
+  const deleteTag = () => {
+    async function deleteRequest() {
+      let response = await fetch(
+        endpoint + "attributes/delete/" + props.selectedTagId,
+        {
+          method: "PUT"
+        }
+      );
+    }
+    deleteRequest().then(() => {
+      props.setTagView("TagAdd");
+      tableRef.current.onQueryChange();
+    });
+  };
+
   return (
     <Grid container spacing={3} className={classes.root}>
       <Grid container item lg={6} md={6} sm={12} justify="center" spacing={1}>
@@ -107,6 +123,18 @@ export default function TagEdit(props) {
             onClick={handleEdit}
           >
             Edit Tag
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            className={classes.button}
+            startIcon={<AddCircleIcon />}
+            onClick={deleteTag}
+          >
+            Delete Tag
           </Button>
         </Grid>
       </Grid>
