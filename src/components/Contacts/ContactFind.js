@@ -11,6 +11,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Chip from "@material-ui/core/Chip";
+import { ExportReactCSV } from "./ContactTable";
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,19 +48,35 @@ const MenuProps = {
     }
   }
 };
-
+// function loadTags(){
+//   query => 
+//   new Promise((resolve, reject) => {
+//     let url = 'http:'
+//   })
+// }
 const tags = ["OSU", "Soccer League", "LinkedIn", "WomenWhoCode", "Family", "Taiwan", "High Priority", "Clean Up"];
 const tagsHash = {"OSU": 1, "Soccer League": 2, "LinkedIn": 3, "WomenWhoCode": 4, "Family": 5, "Taiwan": 6, "High Priority": 7, "Clean up": 8}
+const sorts = ["First Name", "Last Name", "Organization", "Role"]
+const sortsHash = {"First Name": "firstName", "Last Name": "lastName", "Organization": "organization",
+ "Role": "role", "Update Date": "updateDate"}
 
 export default function ContactFind(props) {
   const classes = useStyles();
+  // const tags = loadTags();
   const [selectedTag, setSelectedTag] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState('');
+
 
   const handleChange = event => {
     setSelectedTag(event.target.value);
     console.log(selectedTag)
   };
+
+  const handleSort = event => {
+    props.changeSort(sortsHash[event.target.value]);
+  }
+
+
 
   return (
     <div>
@@ -126,6 +144,22 @@ export default function ContactFind(props) {
               ))}
             </Select>
           </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-mutiple-chip-label">Sort by</InputLabel>
+            <Select
+              labelId="demo-mutiple-chip-label"
+              id="demo-mutiple-chip"
+              value={props.selectedSort}
+              onChange={handleSort}
+            
+            >
+              {sorts.map(sort => (
+                <MenuItem key={sort} value={sort}>
+                  {sort}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Grid>
 
         <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
@@ -142,7 +176,9 @@ export default function ContactFind(props) {
             Add New Contact
           </Button>
         </Grid>
+        
       </Grid>
     </div>
+    
   );
 }

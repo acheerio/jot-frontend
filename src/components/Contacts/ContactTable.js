@@ -17,6 +17,9 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import {UserContext} from "../../userContext";
+import { CSVLink } from 'react-csv'
+import Button from "@material-ui/core/Button";
+
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -39,13 +42,18 @@ const tableIcons = {
   )),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
     ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />)
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props}  ref={ref}  />)
 /*    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />) */
 };
 export let tableRef = React.createRef();
 
 export default function ContactTable(props) {
+  const [selectedValue, setSelectedValue] = React.useState([]);
+  const handleChange = event => {
+    setSelectedValue(event.target.value);
+  }
+ 
   return (
       <UserContext.Consumer>
           {(value)=>(
@@ -76,7 +84,7 @@ export default function ContactTable(props) {
             query.orderDirection = "asc";
             let url = endpoint + props.apiRoute;
             url += "userId=2";
-            url += "&sortField=" + query.orderBy;
+            url += "&sortField=" + props.sortDirection;
             url += "&sortDirection=" + query.orderDirection;
             url += "&pageSize=" + query.pageSize;
             url += "&pageNum=" + query.page;
@@ -85,6 +93,7 @@ export default function ContactTable(props) {
               .then(response => response.json())
               .then(result => {
                 let arr = result.content;
+                console.log(url)
                 console.log(result.content)
                 arr.forEach((element) => {
                     if (element.activities.length > 0) {
@@ -122,6 +131,7 @@ export default function ContactTable(props) {
           }
         ]}
       />
+      
     </React.Fragment>)}
     </UserContext.Consumer>
   );
