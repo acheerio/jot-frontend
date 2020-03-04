@@ -80,6 +80,7 @@ export default function ContactFind(props) {
 
   React.useEffect(() => {
     async function fetchData() {
+      // const value = useContext(UserContext);
       // Get possible tags for user
       /* TODO: Get userId from somewhere (context?) and use instead of hardcoded id here */
       const attributesResponse = await fetch(

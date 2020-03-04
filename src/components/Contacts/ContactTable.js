@@ -91,8 +91,16 @@ export default function ContactTable(props) {
             url += "&sortDirection=" + query.orderDirection;
             url += "&pageSize=" + query.pageSize;
             url += "&pageNum=" + query.page;
+
             console.log(query);
-            fetch(url)
+            console.log("jwt from header");
+            console.log("Bearer " + value.user.jwt);
+            fetch(url, {
+              method: 'GET',
+              headers: {
+                'Authorization': "Bearer " + value.user.jwt,
+              }
+            })
               .then(response => response.json())
               .then(result => {
                 let arr = result.content;

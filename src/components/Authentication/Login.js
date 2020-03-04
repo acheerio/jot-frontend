@@ -91,7 +91,7 @@ export default function Login() {
             let jwt = json.jwt;
             // TODO: Try-Catch block for decoding
             let decoded = jwt_decode(jwt);
-            dispatch({type: 'updateFromJwt', firstName: decoded.firstName, lastName: decoded.lastName, email: decoded.emailAddress, userId: decoded.userId})})
+            dispatch({type: 'updateFromJwt', firstName: decoded.firstName, lastName: decoded.lastName, email: decoded.emailAddress, userId: decoded.userId, jwt: jwt })})
             // dispatch({type: 'updateUserId', userId: decoded.userId})})
         .catch((error) => {
             console.log(error);
