@@ -75,7 +75,7 @@ export default function ContactTable(props) {
             query.orderBy = "contactId";
             query.orderDirection = "asc";
             let url = endpoint + props.apiRoute;
-            url += "userId=2";
+            url += "userId=" + value.user.userId;
             url += "&sortField=" + query.orderBy;
             url += "&sortDirection=" + query.orderDirection;
             url += "&pageSize=" + query.pageSize;

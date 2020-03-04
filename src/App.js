@@ -12,7 +12,8 @@ function App() {
           lastName: "",
           email: "",
           userId: -1,
-          picUrl: ""
+          picUrl: "",
+          jwt: ""
       };
   function init(value) {
     return initialState;
@@ -20,6 +21,14 @@ function App() {
 
     function userReducer(state, action) {
         switch (action.type) {
+            case 'updateFromJwt':
+                return {
+                    firstName: action.firstName,
+                    lastName: action.lastName,
+                    email: action.email,
+                    userId: action.userId,
+                    jwt: action.jwt,
+                }
             case 'updateFirstName':
                 return {
                     firstName: action.firstName,

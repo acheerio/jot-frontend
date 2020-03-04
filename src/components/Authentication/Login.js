@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { UserContext } from '../../userContext';
 import { Link } from 'react-router-dom';
 import Button from "@material-ui/core/Button";
+import jwt_decode from 'jwt-decode';
 
 /* global gapi */
 
@@ -60,10 +61,12 @@ export default function Login() {
         console.log(profile.getGivenName());
         console.log(profile.getFamilyName());
 
+        /*
         dispatch({type: 'updateFirstName', firstName: profile.getGivenName()});
         dispatch({type: 'updateLastName', lastName: profile.getFamilyName()});
         dispatch({type: 'updateEmail', email: profile.getEmail()});
         dispatch({type: 'updatePicUrl', picUrl: profile.getImageUrl()});
+         */
 
         let data = {
             accessToken: accessToken,
@@ -84,19 +87,15 @@ export default function Login() {
         .then((response) => response.json())
         .then((json) => {
             console.log(json);
-            console.log((json.id).toString());
-            dispatch({type: 'updateUserId', userId: (json.id).toString()})})
+            // console.log((json.id).toString());
+            let jwt = json.jwt;
+            // TODO: Try-Catch block for decoding
+            let decoded = jwt_decode(jwt);
+            dispatch({type: 'updateFromJwt', firstName: decoded.firstName, lastName: decoded.lastName, email: decoded.emailAddress, userId: decoded.userId})})
+            // dispatch({type: 'updateUserId', userId: decoded.userId})})
         .catch((error) => {
             console.log(error);
         });
-    }
-
-    function onClickHandler(event) {
-        // var auth2 = gapi.auth2.getAuthInstance();
-        // auth2.signOut().then(function () {
-            dispatch({type: 'reset'});
-            console.log('User signed out.');
-        //});
     }
 
     return (
@@ -130,3 +129,4 @@ export default function Login() {
         </Container>
     );
 }
+
