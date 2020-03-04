@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import useScript from '../../util/useScript.js';
-import GoogleLogin from 'react-google-login';
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -10,7 +9,9 @@ import Typography from "@material-ui/core/Typography";
 import { UserContext } from '../../userContext';
 import { Link } from 'react-router-dom';
 import Button from "@material-ui/core/Button";
-import jwt_decode from 'jwt-decode';
+import Cookies from 'js-cookie';
+import { Redirect } from 'react-router-dom';
+import jwt_decode from "jwt-decode";
 
 /* global gapi */
 
@@ -34,7 +35,19 @@ export default function Login() {
     let endpoint = 'http://localhost:5000/login'
 
     const classes = useStyles();
-    const {dispatch} = useContext(UserContext);
+    // const {dispatch} = useContext(UserContext);
+
+    const value = useContext(UserContext);
+    console.log(value);
+    const { dispatch } = useContext(UserContext);
+    console.log("logged in status");
+    console.log(value.user.loggedIn);
+    useEffect(() => {
+        console.log('effect triggered');
+        // let jwt = Cookies.get('jwt');
+        if (value.user.loggedIn)
+            return <Redirect to="/" />
+    });
 
     useEffect(() => {
         gapi.signin2.render('g-signin2', {
@@ -45,28 +58,13 @@ export default function Login() {
             'theme': 'light',
             'onsuccess': onSignIn
         })
-    }, [])
+    }, []);
 
     function onSignIn(googleUser) {
 
-        let profile = googleUser.getBasicProfile();
-        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        // let profile = googleUser.getBasicProfile();
         const idToken = googleUser.getAuthResponse().id_token;
         const accessToken = googleUser.getAuthResponse().access_token;
-        console.log('ID token: ' + idToken);
-        console.log('Access token: ' + accessToken);
-        console.log(profile.getGivenName());
-        console.log(profile.getFamilyName());
-
-        /*
-        dispatch({type: 'updateFirstName', firstName: profile.getGivenName()});
-        dispatch({type: 'updateLastName', lastName: profile.getFamilyName()});
-        dispatch({type: 'updateEmail', email: profile.getEmail()});
-        dispatch({type: 'updatePicUrl', picUrl: profile.getImageUrl()});
-         */
 
         let data = {
             accessToken: accessToken,
@@ -87,12 +85,24 @@ export default function Login() {
         .then((response) => response.json())
         .then((json) => {
             console.log(json);
-            // console.log((json.id).toString());
             let jwt = json.jwt;
-            // TODO: Try-Catch block for decoding
-            let decoded = jwt_decode(jwt);
-            dispatch({type: 'updateFromJwt', firstName: decoded.firstName, lastName: decoded.lastName, email: decoded.emailAddress, userId: decoded.userId, jwt: jwt })})
-            // dispatch({type: 'updateUserId', userId: decoded.userId})})
+            Cookies.set('jwt', jwt);
+            let decoded;
+            try {
+                decoded = jwt_decode(jwt);
+                dispatch({
+                    type: 'updateFromJwt',
+                    loggedIn: true,
+                    firstName: decoded.firstName,
+                    lastName: decoded.lastName,
+                    email: decoded.emailAddress,
+                    userId: decoded.userId,
+                    jwt: jwt });
+            } catch (err) {
+                console.log("Invalid JWT");
+                console.log(err);
+            }
+        })
         .catch((error) => {
             console.log(error);
         });
@@ -103,7 +113,8 @@ export default function Login() {
             <Grid className={classes.container} container spacing={3}>
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
-                        <Typography variant="h2" component="h2" className={classes.typography}>Sign up for Jot today!</Typography>
+                        <Typography variant="h2" component="h2" className={classes.typography}>Sign up for Jot
+                            today!</Typography>
                     </Paper>
                 </Grid>
                 <Grid item xs={5}></Grid>
@@ -114,7 +125,7 @@ export default function Login() {
                 <Grid item xs={12}>
                     <Paper className={classes.paper}>
                         <UserContext.Consumer>
-                            {(value)=>(<Typography variant="body1" component="div">
+                            {(value) => (<Typography variant="body1" component="div">
                                 <img src={value.user.picUrl}/>
                                 <div>First Name: {value.user.firstName}</div>
                                 <div>Last Name: {value.user.lastName}</div>

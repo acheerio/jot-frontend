@@ -80,9 +80,6 @@ export default function ContactFind(props) {
   }
 
   const value = useContext(UserContext);
-  console.log("CONTACTFIND CONTEXT");
-  console.log(value.user.email);
-  console.log(value.user.jwt);
 
   React.useEffect(() => {
     async function fetchData() {
