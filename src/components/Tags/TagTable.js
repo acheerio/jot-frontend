@@ -11,8 +11,8 @@ import { forwardRef } from "react";
 import {UserContext} from "../../userContext";
 import Edit from "@material-ui/icons/Edit";
 
-const endpoint = "http://api.jot-app.com/";
-// const endpoint = "http://localhost:5000/";
+// const endpoint = "http://api.jot-app.com/";
+const endpoint = "http://localhost:5000/";
 
 const tableIcons = {
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),

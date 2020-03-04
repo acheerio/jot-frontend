@@ -5,9 +5,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import ActivityFind from "./ActivityFind"
-import ActivityDetail from "./ActivityDetail"
-
+import ActivityFind from "./ActivityFind";
+import ActivityEdit from "./ActivityEdit";
+import ActivityAdd from "./ActivityAdd";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -32,8 +32,11 @@ export default function Activities() {
     case "ActivityFind":
       activityViewComponent = <ActivityFind setActivityView={setActivityView} />;
       break;
-    case "ActivityDetail":
-      activityViewComponent = <ActivityDetail setActivityView={setActivityView} />;
+    case "ActivityAdd":
+      activityViewComponent = <ActivityAdd setActivityView={setActivityView} />;
+      break;
+    case "ActivityEdit":
+      activityViewComponent = <ActivityEdit setActivityView={setActivityView} />;
       break;
     default:
       activityViewComponent = <h1>No page selected...</h1>;

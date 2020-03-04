@@ -42,7 +42,7 @@ const MenuProps = {
 
 const types = ["Task", "Note"];
 
-export default function ActivityDetail(props) {
+export default function ActivityEdit(props) {
     const classes = useStyles();
     const [selectedType, setSelectedType] = React.useState([]);
   
