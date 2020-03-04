@@ -37,10 +37,16 @@ export default function Contacts() {
 
   // Determine data table route
   const [apiRoute, setApiRoute] = React.useState("contacts/all?");
+  const [sortDirection, setSortDirection] = React.useState("contactId");
   const refreshTable = ((newRoute) => {
     setApiRoute(newRoute);
     tableRef.current.onQueryChange();
   });
+
+  const changeSort = ((newSort) => {
+    setSortDirection(newSort);
+    tableRef.current.onQueryChange();
+  })
 
   // Code to control which page is shown to user
   let contactViewComponent = null;
@@ -51,6 +57,9 @@ export default function Contacts() {
         <ContactFind
           setContactView={setContactView}
           refreshTable={refreshTable}
+          changeSort={changeSort}
+          sortDirection={sortDirection}
+
         />
       );
       break;
@@ -63,6 +72,8 @@ export default function Contacts() {
           setContactView={setContactView}
           selectedContactId={selectedContactId}
           updateTableOnDataChange={updateTableOnDataChange}
+          refreshTable={refreshTable}
+
         />
       );
       break;
@@ -86,6 +97,10 @@ export default function Contacts() {
               setContactView={setContactView}
               apiRoute={apiRoute}
               setApiRoute={setApiRoute}
+              changeSort={changeSort}
+              sortDirection={sortDirection}
+
+
             />
           </Paper>
         </Grid>
