@@ -21,8 +21,8 @@ import { CSVLink } from 'react-csv'
 import Button from "@material-ui/core/Button";
 
 
-// const endpoint = "http://api.jot-app.com/";
-const endpoint = "http://localhost:5000/";
+const endpoint = "http://api.jot-app.com/";
+// const endpoint = "http://localhost:5000/";
 
 const tableIcons = {
   /*

@@ -1,74 +1,91 @@
 import React from "react";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Clear from "@material-ui/icons/Clear";
+import FirstPage from "@material-ui/icons/FirstPage";
+import LastPage from "@material-ui/icons/LastPage";
+import MaterialTable from "material-table";
+import Search from "@material-ui/icons/Search";
+import { forwardRef } from "react";
+import {UserContext} from "../../userContext";
+import Edit from "@material-ui/icons/Edit";
 
-// Generate Order Data
-function createData(
-    attributeId,
-    name,
-    createDate,
-    description
-) {
-    return { name, createDate, description };
-}
+// const endpoint = "http://api.jot-app.com/";
+const endpoint = "http://localhost:5000/";
 
-const rows = [
-    createData(
-        1,
-        "OSU",
-        "2/1/2020",
-        "Classmate at OSU eCampus program",
-    ),
-    createData(
-        2,
-        "GHC",
-        "10/1/2019",
-        "Met through Grace Hopper Celebration",
-    ),
-    createData(
-        3,
-        "LinkedIn",
-        "1/1/2020",
-        "LinkedIn connection",
-    ),
-    createData(
-        4,
-        "Facebook Summer 2019 Interns",
-        "4/15/2019",
-        "Facebook summer internship 2019 cohort",
-    ),
-    createData(
-        5,
-        "Code for Good",
-        "12/1/2019",
-        "JP Morgan Code for Good event",
-    )
-];
+const tableIcons = {
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => (
+      <ChevronLeft {...props} ref={ref} />
+    )),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />)
+};
+export let tableRef = React.createRef();
 
-export default function TagTable() {
+export default function TagTable(props) {
     return (
-        <React.Fragment>
-            <Table size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell>Created</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map(row => (
-                        <TableRow key={row.attributeId}>
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.description}</TableCell>
-                            <TableCell>{row.createDate}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </React.Fragment>
+      <UserContext.Consumer>
+          {(value)=>(
+            <React.Fragment>
+                <MaterialTable
+                  tableRef={tableRef}
+                  title="Tags"
+                  columns={[
+                      { title: "Attribute ID", field: "attributeId", hidden: true },
+                      { title: "Title", field: "title" },
+                      { title: "Description", field: "description" },
+                      { title: "Update Date", field: "createDate" },
+                  ]}
+                  icons={tableIcons}
+                  options={{
+                      pageSize: 5,
+                      initialPage: 0,
+                      defaultSort: "desc",
+                      search: false
+                  }}
+                  data={query =>
+                    new Promise((resolve, reject) => {
+                        query.orderBy = "title";
+                        query.orderDirection = "asc";
+                        let url = endpoint + "attributes/all?";
+                        url += "userId=7";
+                        url += "&sortField=" + query.orderBy;
+                        url += "&sortDirection=" + query.orderDirection;
+                        url += "&pageSize=" + query.pageSize;
+                        url += "&pageNum=" + query.page;
+                        console.log(url);
+                        fetch(url)
+                          .then(response => response.json())
+                          .then(result => {
+                              let arr = result.content;
+                              console.log(result.content)
+                              let tableData = JSON.stringify(arr);
+                              resolve({
+                                  data: arr,
+                                  page: result.number,
+                                  totalCount: result.totalElements
+                              });
+                          });
+                    })
+                  }
+                  actions={[
+                      {
+                          icon: Edit,
+                          tooltip: "Edit or Delete Tag",
+                          onClick: (event, rowData) => {
+                              props.setSelectedTagId(rowData.attributeId);
+                              props.setTagView("TagEdit");
+                          }
+                      }
+                  ]}
+                />
+            </React.Fragment>)}
+      </UserContext.Consumer>
     );
 }

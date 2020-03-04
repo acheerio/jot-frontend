@@ -115,7 +115,7 @@ export default function ActivityFind(props) {
                 className={classes.button}
                 startIcon={<AddCircleIcon />}
                 onClick={() => {
-                  props.setActivityView("ActivityDetail");
+                  props.setActivityView("ActivityAdd");
                 }}
               >
                 Add New Activity
