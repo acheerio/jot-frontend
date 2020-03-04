@@ -11,8 +11,8 @@ import LastPage from "@material-ui/icons/LastPage";
 import Search from "@material-ui/icons/Search";
 import {UserContext} from "../../userContext";
 
-const endpoint = "http://api.jot-app.com/";
-// const endpoint = "http://localhost:5000/";
+// const endpoint = "http://api.jot-app.com/";
+const endpoint = "http://localhost:5000/";
 
 const tableIcons = {
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
@@ -56,7 +56,7 @@ export default function ActivityTable(props) {
                 query.orderBy = "notes";
                 query.orderDirection = "asc";
                 let url = endpoint + "activities/all?"; //props.apiRoute;
-                url += "userId=2";
+                url += "userId=7";
                 url += "&sortField=" + query.orderBy;
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;

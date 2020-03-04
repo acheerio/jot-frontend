@@ -8,10 +8,10 @@ import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
-import { tableRef } from "../Tags/TagTable";
+import { tableRef } from "../Activities/ActivityTable";
 
-const endpoint = "http://api.jot-app.com/";
-// const endpoint = "http://localhost:5000/";
+// const endpoint = "http://api.jot-app.com/";
+const endpoint = "http://localhost:5000/";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,20 +49,19 @@ const types = ["Task", "Note"];
 export default function ActivityAdd(props) {
   const classes = useStyles();
 
-  // Manage selected tags
-  const [selectedType, setSelectedType] = React.useState([]);
-
-  const handleTypeChange = event => {
-    setSelectedType(event.target.value);
-  };
+  function getCurrentDate() {
+    let today = new Date().toISOString().slice(0, 10);
+    return today;
+  }
 
   // Manage form to add new record
   const [state, setState] = React.useState({
-    type: "",
+    type: "Task",
     notes: "",
     status: "",
-    completedDate: "",
-    dueDate: ""
+    completeDate: getCurrentDate(),
+    dueDate: getCurrentDate(),
+    contactId: ""
   });
 
   const handleChange = event => {
@@ -77,19 +76,21 @@ export default function ActivityAdd(props) {
       type: "",
       notes: "",
       status: "",
-      completedDate: "",
-      dueDate: ""
+      completeDate: "",
+      dueDate: "",
+      contactId: ""
     });
   }
 
   function handleAdd(e) {
     let url = endpoint + "activities/add?";
     url += "userId=7";
-    url += "&type=" + state.title;
-    url += "&notes=" + state.description;
+    // url += "&contactId=11"; /* TODO: do not hardcode, get real ID */
+    url += "&type=" + state.type;
+    url += "&notes=" + state.notes;
     url += "&status=" + state.status;
-    url += "&completedDate=" + state.description;
-    url += "&dueDate=" + state.title;
+    url += "&completeDate=" + state.completeDate;
+    url += "&dueDate=" + state.dueDate;
     console.log(url);
     fetch(url, { method: "post" })
       .then(response => {
@@ -106,46 +107,51 @@ export default function ActivityAdd(props) {
     <Grid container spacing={3} className={classes.root}>
       <Grid container item lg={6} md={6} sm={12} justify="center" spacing={2}>
         <Grid item xs={12}>
-          <TextField name="type" label="Type" onChange={handleChange} />
+          <InputLabel id="demo-simple-select-label">Type</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            name="type"
+            value={state.type}
+            onChange={handleChange}
+          >
+            <MenuItem value={'Note'}>Note</MenuItem>
+            <MenuItem value={'Task'}>Task</MenuItem>
+          </Select>
         </Grid>
         <Grid item xs={12}>
-          <TextField name="notes" label="Notes" onChange={handleChange} />
+          <TextField name="notes" label="Description" onChange={handleChange} />
         </Grid>
         <Grid item xs={12}>
           <TextField name="status" label="Status" onChange={handleChange} />
         </Grid>
-        <Grid item xs={12}>
-          <TextField name="completeDate" label="Complete Date" onChange={handleChange} />
-        </Grid>
       </Grid>
       <Grid container item lg={6} md={6} sm={12} spacing={2}>
         <Grid item xs={12}>
-          <TextField name="dueDate" label="Due Date" onChange={handleChange} />
+          <TextField
+            name="completeDate"
+            label="Completed Date"
+            type="date"
+            defaultValue={state.completeDate}
+            onChange={handleChange}
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
         </Grid>
         <Grid item xs={12}>
-          <InputLabel id="demo-mutiple-chip-label">Add Tags</InputLabel>
-          <Select
-            labelId="demo-mutiple-chip-label"
-            id="demo-mutiple-chip"
-            multiple
-            value={selectedType}
-            onChange={handleTypeChange}
-            input={<Input id="select-multiple-chip" />}
-            renderValue={selected => (
-              <div className={classes.chips}>
-                {selected.map(value => (
-                  <Chip key={value} label={value} className={classes.chip} />
-                ))}
-              </div>
-            )}
-            MenuProps={MenuProps}
-          >
-            {types.map(type => (
-              <MenuItem key={type} value={type}>
-                {type}
-              </MenuItem>
-            ))}
-          </Select>
+          <TextField
+            name="dueDate"
+            label="Due Date"
+            type="date"
+            defaultValue={state.dueDate}
+            onChange={handleChange}
+            className={classes.textField}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
         </Grid>
       </Grid>
       <Grid item xs={4}>
