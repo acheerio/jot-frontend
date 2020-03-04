@@ -6,6 +6,7 @@ const UserContext = React.createContext({
     email: "",
     userId: -1,
     picUrl: "",
+    jwt: ""
 });
 
 export { UserContext };

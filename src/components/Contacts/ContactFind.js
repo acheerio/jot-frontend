@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -12,6 +12,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Chip from "@material-ui/core/Chip";
 import { ExportReactCSV } from "./ContactTable";
+import { UserContext } from "../../userContext";
 
 const endpoint = "http://localhost:5000/";
 
@@ -78,15 +79,25 @@ export default function ContactFind(props) {
     props.changeSort(sortsHash[event.target.value]);
   }
 
+  const value = useContext(UserContext);
+  console.log("CONTACTFIND CONTEXT");
+  console.log(value.user.email);
+  console.log(value.user.jwt);
+
   React.useEffect(() => {
     async function fetchData() {
-      // const value = useContext(UserContext);
       // Get possible tags for user
       /* TODO: Get userId from somewhere (context?) and use instead of hardcoded id here */
       const attributesResponse = await fetch(
         endpoint +
-          "attributes/all?userId=7" +
-          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC"
+          "attributes/all?userId=" + value.user.userId +
+          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': "Bearer " + value.user.jwt,
+            }
+          }
       );
       const attributesData = await attributesResponse.json();
       console.log(attributesData);
