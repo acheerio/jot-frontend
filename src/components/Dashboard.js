@@ -134,9 +134,14 @@ export default function Dashboard() {
     // remove cookie
     Cookies.remove('jwt');
     // clear userContext
-    dispatch({type: 'reset'});
     // redirect to login page
-    return <Redirect to="/login" />;
+    if (window.gapi) {
+      console.log("auth2");
+      let auth2 = window.gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        dispatch({type: 'reset'});
+      });
+    }
   }
   // Actual JSX to be returned to render on the page
   return (

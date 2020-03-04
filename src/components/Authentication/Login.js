@@ -38,18 +38,13 @@ export default function Login() {
     // const {dispatch} = useContext(UserContext);
 
     const value = useContext(UserContext);
-    console.log(value);
     const { dispatch } = useContext(UserContext);
-    console.log("logged in status");
+    console.log("in Login function / component");
+    console.log("logged in status from context");
     console.log(value.user.loggedIn);
-    useEffect(() => {
-        console.log('effect triggered');
-        // let jwt = Cookies.get('jwt');
-        if (value.user.loggedIn)
-            return <Redirect to="/" />
-    });
 
     useEffect(() => {
+        if (gapi) {
         gapi.signin2.render('g-signin2', {
             'scope': 'openid profile email https://www.googleapis.com/auth/contacts',
             'width': 200,
@@ -57,11 +52,11 @@ export default function Login() {
             'longtitle': false,
             'theme': 'light',
             'onsuccess': onSignIn
-        })
+        })}
     }, []);
 
     function onSignIn(googleUser) {
-
+        console.log("in onSignIn function");
         // let profile = googleUser.getBasicProfile();
         const idToken = googleUser.getAuthResponse().id_token;
         const accessToken = googleUser.getAuthResponse().access_token;

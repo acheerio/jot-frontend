@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
     <meta name="google-signin-scope" content="profile email https://www.googleapis.com/auth/contacts"></meta>
     <meta name="google-signin-client_id" content="924098505527-ta2u3pvgjksj497p9lu7rcahkvfoq1vs.apps.googleusercontent.com"></meta>
     <meta charset="utf-8" />
@@ -31,6 +31,14 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      function init() {
+        gapi.load('auth2', function() {
+          gapi.auth2.init({ client_id: '924098505527-ta2u3pvgjksj497p9lu7rcahkvfoq1vs.apps.googleusercontent.com'});
+          });
+        console.log("initialized");
+        }
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.
