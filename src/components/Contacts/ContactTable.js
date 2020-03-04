@@ -17,6 +17,9 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import {UserContext} from "../../userContext";
+import { CSVLink } from 'react-csv'
+import Button from "@material-ui/core/Button";
+
 
 const endpoint = "http://api.jot-app.com/";
 // const endpoint = "http://localhost:5000/";
@@ -28,7 +31,7 @@ const tableIcons = {
     Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
     DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
     Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    
     Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />), */
   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -39,13 +42,19 @@ const tableIcons = {
   )),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
     ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />)
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props}  ref={ref}  />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
 /*    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />) */
 };
 export let tableRef = React.createRef();
 
 export default function ContactTable(props) {
+  const [selectedValue, setSelectedValue] = React.useState([]);
+  const handleChange = event => {
+    setSelectedValue(event.target.value);
+  }
+ 
   return (
       <UserContext.Consumer>
           {(value)=>(
@@ -68,7 +77,9 @@ export default function ContactTable(props) {
           pageSize: 5,
           initialPage: 0,
           defaultSort: "desc",
-          search: false
+          search: false,
+          exportButton: true,
+          
         }}
         data={query =>
           new Promise((resolve, reject) => {
@@ -76,7 +87,7 @@ export default function ContactTable(props) {
             query.orderDirection = "asc";
             let url = endpoint + props.apiRoute;
             url += "userId=2";
-            url += "&sortField=" + query.orderBy;
+            url += "&sortField=" + props.sortDirection;
             url += "&sortDirection=" + query.orderDirection;
             url += "&pageSize=" + query.pageSize;
             url += "&pageNum=" + query.page;
@@ -85,6 +96,7 @@ export default function ContactTable(props) {
               .then(response => response.json())
               .then(result => {
                 let arr = result.content;
+                console.log(url)
                 console.log(result.content)
                 arr.forEach((element) => {
                     if (element.activities.length > 0) {
@@ -122,6 +134,7 @@ export default function ContactTable(props) {
           }
         ]}
       />
+      
     </React.Fragment>)}
     </UserContext.Consumer>
   );
