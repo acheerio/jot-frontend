@@ -5,10 +5,9 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
-import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "../Activities/ActivityTable";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -35,16 +34,6 @@ const useStyles = makeStyles(theme => ({
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250
-    }
-  }
-};
-
-const types = ["Task", "Note"];
 
 export default function ActivityAdd(props) {
   const classes = useStyles();
@@ -58,11 +47,26 @@ export default function ActivityAdd(props) {
   const [state, setState] = React.useState({
     type: "Task",
     notes: "",
-    status: "",
+    status: "Not Started",
     completeDate: getCurrentDate(),
     dueDate: getCurrentDate(),
-    contactId: ""
+    contactId: "",
+    contacts: []
   });
+
+  //const [contacts, setContacts] = React.useState([]);
+
+  React.useEffect(() => {
+    async function fetchData() {
+      console.log("Getting contact ids and names");
+      const contactsResponse = await fetch(
+        endpoint + "contacts/IdAndNames?userId=3" // TODO: GET USERID FROM CONTEXT
+      );
+      const contactsData = await contactsResponse.json();
+      await setState({ contacts: [...state.contacts, ...contactsData] });
+    }
+    fetchData();
+  }, []);
 
   const handleChange = event => {
     setState({
@@ -78,7 +82,8 @@ export default function ActivityAdd(props) {
       status: "",
       completeDate: "",
       dueDate: "",
-      contactId: ""
+      contactId: "",
+      contacts: []
     });
   }
 
@@ -115,18 +120,43 @@ export default function ActivityAdd(props) {
             value={state.type}
             onChange={handleChange}
           >
-            <MenuItem value={'Note'}>Note</MenuItem>
-            <MenuItem value={'Task'}>Task</MenuItem>
+            <MenuItem value={"Note"}>Note</MenuItem>
+            <MenuItem value={"Task"}>Task</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item xs={12}>
+          <InputLabel id="demo-simple-select-label">Associated Contact</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            name="contact"
+            value={state.contact}
+            onChange={handleChange}
+          >
+            {state.contacts.map((contact, index) => (
+              <MenuItem value={contact}>{contact.fullName}</MenuItem>
+            ))}
           </Select>
         </Grid>
         <Grid item xs={12}>
           <TextField name="notes" label="Description" onChange={handleChange} />
         </Grid>
-        <Grid item xs={12}>
-          <TextField name="status" label="Status" onChange={handleChange} />
-        </Grid>
       </Grid>
       <Grid container item lg={6} md={6} sm={12} spacing={2}>
+        <Grid item xs={12}>
+          <InputLabel id="demo-simple-select-label">Status</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            name="status"
+            value={state.status}
+            onChange={handleChange}
+          >
+            <MenuItem value={"Not Started"}>Not Started</MenuItem>
+            <MenuItem value={"In Progress"}>In Progress</MenuItem>
+            <MenuItem value={"Complete"}>Complete</MenuItem>
+          </Select>
+        </Grid>
         <Grid item xs={12}>
           <TextField
             name="completeDate"
@@ -136,7 +166,7 @@ export default function ActivityAdd(props) {
             onChange={handleChange}
             className={classes.textField}
             InputLabelProps={{
-              shrink: true,
+              shrink: true
             }}
           />
         </Grid>
@@ -149,7 +179,7 @@ export default function ActivityAdd(props) {
             onChange={handleChange}
             className={classes.textField}
             InputLabelProps={{
-              shrink: true,
+              shrink: true
             }}
           />
         </Grid>
