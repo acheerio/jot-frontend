@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { tableRef } from "./TagTable";
+import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -31,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function TagEdit(props) {
   const classes = useStyles();
+  const value = useContext(UserContext);
   const [state, setState] = React.useState({
     title: "",
     description: ""
@@ -41,7 +43,12 @@ export default function TagEdit(props) {
       console.log("useEffect fetchData firing...");
       let url = endpoint + "attributes/" + props.selectedTagId;
       console.log(url);
-      const attributesResponse = await fetch(url);
+      const attributesResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + value.user.jwt
+        }
+      });
       const responseData = await attributesResponse.json();
       console.log(responseData);
       setState({
@@ -62,11 +69,16 @@ export default function TagEdit(props) {
   function handleEdit(e) {
     let url = endpoint + "attributes/update/";
     url += props.selectedTagId + "?";
-    url += "userId=7"; /* TODO: GET FROM CONTEXT */
+    url += "userId=" + value.user.userId;
     url += "&title=" + state.title;
     url += "&description=" + state.description;
     console.log(url);
-    fetch(url, { method: "put" })
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + value.user.jwt
+      }
+    })
       .then(response => {
         tableRef.current && tableRef.current.onQueryChange();
         props.setTagView("TagAdd");
@@ -82,7 +94,10 @@ export default function TagEdit(props) {
       let response = await fetch(
         endpoint + "attributes/delete/" + props.selectedTagId,
         {
-          method: "PUT"
+          method: "PUT",
+          headers: {
+            Authorization: "Bearer " + value.user.jwt
+          }
         }
       );
     }
@@ -122,7 +137,7 @@ export default function TagEdit(props) {
             startIcon={<AddCircleIcon />}
             onClick={handleEdit}
           >
-            Edit Tag
+            Save Changes
           </Button>
         </Grid>
         <Grid item xs={12}>

@@ -89,13 +89,13 @@ export default function ContactTable(props) {
                 console.log(url)
                 console.log(result.content)
                 arr.forEach((element) => {
-                    if (element.activities.length > 0) {
+                    if (element.activities && element.activities.length > 0) {
                         element.recentActivity = element.activities.slice(-1)[0].notes;
                     }
                     else {
                         element.recentActivity = null;
                     }
-                    if (element.attributes.length > 0) {
+                    if (element.attributes && element.attributes.length > 0) {
                       element.attributeList = [];
                       element.attributes.forEach(e => {element.attributeList.push(e.title)});
                       element.attributeDisplay = element.attributeList.join(", ");

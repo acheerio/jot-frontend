@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { tableRef } from "./TagTable";
+import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -31,6 +32,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function TagAdd(props) {
   const classes = useStyles();
+  const value = useContext(UserContext);
+
   const [state, setState] = React.useState({
     title: "",
     description: ""
@@ -52,11 +55,16 @@ export default function TagAdd(props) {
 
   function handleAdd(e) {
     let url = endpoint + "attributes/add?";
-    url += "userId=7";
+    url += "userId=" + value.user.userId;
     url += "&title=" + state.title;
     url += "&description=" + state.description;
     console.log(url);
-    fetch(url, { method: "post" })
+    fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + value.user.jwt
+      }
+    })
       .then(response => {
         tableRef.current && tableRef.current.onQueryChange();
       })

@@ -66,10 +66,9 @@ export default function ContactEdit(props) {
   React.useEffect(() => {
     async function fetchData() {
       // First get possible tags for user
-      /* TODO: Get userId from somewhere (context?) and use instead of hardcoded id here */
       const attributesResponse = await fetch(
         endpoint +
-          "attributes/all?userId=7" +
+          "attributes/all?userId=" + value.user.userId +
           "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
           {
             method: 'GET',
