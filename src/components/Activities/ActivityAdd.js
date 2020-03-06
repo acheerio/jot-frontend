@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -7,7 +7,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "../Activities/ActivityTable";
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -37,19 +38,15 @@ const ITEM_PADDING_TOP = 8;
 
 export default function ActivityAdd(props) {
   const classes = useStyles();
-
-  function getCurrentDate() {
-    let today = new Date().toISOString().slice(0, 10);
-    return today;
-  }
+  const value = useContext(UserContext);
 
   // Manage form to add new record
   const [state, setState] = React.useState({
     type: "Task",
     notes: "",
     status: "Not Applicable",
-    completeDate: getCurrentDate(),
-    dueDate: getCurrentDate(),
+    completeDate: null,
+    dueDate: null,
     contactId: "",
     contacts: []
   });
@@ -60,10 +57,19 @@ export default function ActivityAdd(props) {
     async function fetchData() {
       console.log("Getting contact ids and names");
       const contactsResponse = await fetch(
-        endpoint + "contacts/IdAndNames?userId=3" // TODO: GET USERID FROM CONTEXT
+        endpoint + "contacts/IdAndNames?userId=" + value.user.userId,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + value.user.jwt
+          }
+        }
       );
       const contactsData = await contactsResponse.json();
-      await setState({...state, contacts: [...state.contacts, ...contactsData] });
+      await setState({
+        ...state,
+        contacts: [...state.contacts, ...contactsData]
+      });
     }
     fetchData();
   }, []);
@@ -89,16 +95,24 @@ export default function ActivityAdd(props) {
 
   function handleAdd(e) {
     let url = endpoint + "activities/add?";
-    url += "userId=7";
-    // url += "&contactId=11"; /* TODO: do not hardcode, get real ID */
+    url += "userId=" + value.user.userId;
     url += "&type=" + state.type;
     url += "&notes=" + state.notes;
     url += "&status=" + state.status;
-    url += "&completeDate=" + state.completeDate;
-    url += "&dueDate=" + state.dueDate;
+    if (state.completeDate != null && state.dueDate != "null") {
+      url += "&completeDate=" + state.completeDate;
+    }
+    if (state.dueDate != null && state.dueDate != "null") {
+      url += "&dueDate=" + state.dueDate;
+    }
     url += "&contactId=" + state.contactId;
     console.log(url);
-    fetch(url, { method: "post" })
+    fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + value.user.jwt
+      }
+    })
       .then(response => {
         tableRef.current && tableRef.current.onQueryChange();
         props.setActivityView("ActivityFind");
@@ -131,8 +145,16 @@ export default function ActivityAdd(props) {
             options={state.contacts}
             getOptionLabel={contact => contact.fullName}
             style={{ width: 300 }}
-            onChange={(event, value) => setState({...state, contactId: value.contactId})}
-            renderInput={params => <TextField {...params} label="Associated Contact" variant="outlined" />}
+            onChange={(event, value) =>
+              setState({ ...state, contactId: value.contactId })
+            }
+            renderInput={params => (
+              <TextField
+                {...params}
+                label="Associated Contact"
+                variant="outlined"
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12}>

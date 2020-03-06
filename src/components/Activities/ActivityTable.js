@@ -57,13 +57,18 @@ export default function ActivityTable(props) {
                 query.orderBy = "notes";
                 query.orderDirection = "asc";
                 let url = endpoint + "activities/all?"; //props.apiRoute;
-                url += "userId=7";
+                url +=  "userId=" + value.user.userId;
                 url += "&sortField=" + query.orderBy;
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
                 url += "&pageNum=" + query.page;
                 console.log(query);
-                fetch(url)
+                fetch(url, {
+                  method: "GET",
+                  headers: {
+                    Authorization: "Bearer " + value.user.jwt
+                  }
+                })
                   .then(response => response.json())
                   .then(result => {
                     let arr = result.content;
@@ -83,7 +88,7 @@ export default function ActivityTable(props) {
                 tooltip: "Edit or Delete Activity",
                 onClick: (event, rowData) => {
                   props.setSelectedActivityId(rowData.activityId);
-                  props.setContactView("ActivityEdit");
+                  props.setActivityView("ActivityEdit");
                 }
               }
             ]}

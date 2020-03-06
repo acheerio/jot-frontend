@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -7,7 +7,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "../Activities/ActivityTable";
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { UserContext } from "../../userContext";
+import AddCircleIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -37,36 +39,50 @@ const ITEM_PADDING_TOP = 8;
 
 export default function ActivityAdd(props) {
   const classes = useStyles();
-
-  function getCurrentDate() {
-    let today = new Date().toISOString().slice(0, 10);
-    return today;
-  }
+  const value = useContext(UserContext);
 
   // Manage form to add new record
   const [state, setState] = React.useState({
-    type: "Task",
+    type: "",
     notes: "",
-    status: "Not Applicable",
-    completeDate: getCurrentDate(),
-    dueDate: getCurrentDate(),
-    contactId: "",
-    contacts: []
+    status: "",
+    completeDate: "",
+    dueDate: "",
+    contactFullName: ""
   });
-
-  //const [contacts, setContacts] = React.useState([]);
 
   React.useEffect(() => {
     async function fetchData() {
-      console.log("Getting contact ids and names");
-      const contactsResponse = await fetch(
-        endpoint + "contacts/IdAndNames?userId=3" // TODO: GET USERID FROM CONTEXT
-      );
-      const contactsData = await contactsResponse.json();
-      await setState({...state, contacts: [...state.contacts, ...contactsData] });
+      console.log("useEffect fetchData firing...");
+      let url = endpoint + "activities/" + props.selectedActivityId;
+      console.log(url);
+      const attributesResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + value.user.jwt
+        }
+      });
+      const responseData = await attributesResponse.json();
+      console.log(responseData);
+      let shortCompleteDate = "";
+      let shortDueDate = "";
+      if (responseData.completeDate) {
+        shortCompleteDate = responseData.completeDate.slice(0, 10);
+      }
+      if (responseData.dueDate) {
+        shortDueDate = responseData.dueDate.slice(0, 10);
+      }
+      setState({
+        type: responseData.type,
+        notes: responseData.notes,
+        status: responseData.status,
+        completeDate: shortCompleteDate,
+        dueDate: shortDueDate,
+        contactFullName: responseData.contact.fullName
+      });
     }
     fetchData();
-  }, []);
+  }, [props.selectedActivityId]);
 
   const handleChange = event => {
     setState({
@@ -75,30 +91,25 @@ export default function ActivityAdd(props) {
     });
   };
 
-  function clear() {
-    setState({
-      type: "",
-      notes: "",
-      status: "",
-      completeDate: "",
-      dueDate: "",
-      contactId: "",
-      contacts: []
-    });
-  }
-
   function handleEdit(e) {
     let url = endpoint + "activities/update?";
-    url += "userId=7";
-    // url += "&contactId=11"; /* TODO: do not hardcode, get real ID */
+    url += "activityId=" + props.selectedActivityId;
     url += "&type=" + state.type;
     url += "&notes=" + state.notes;
     url += "&status=" + state.status;
-    url += "&completeDate=" + state.completeDate;
-    url += "&dueDate=" + state.dueDate;
-    url += "&contactId=" + state.contactId;
+    if (state.completeDate != null && state.dueDate != "null") {
+      url += "&completeDate=" + state.completeDate;
+    }
+    if (state.dueDate != null && state.dueDate != "null") {
+      url += "&dueDate=" + state.dueDate;
+    }
     console.log(url);
-    fetch(url, { method: "post" })
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + value.user.jwt
+      }
+    })
       .then(response => {
         tableRef.current && tableRef.current.onQueryChange();
         props.setActivityView("ActivityFind");
@@ -106,8 +117,26 @@ export default function ActivityAdd(props) {
       .then(response => {
         console.log("success!");
       });
-    clear();
   }
+
+  // Function to update record:
+  const handleDelete = () => {
+    async function deleteRequest() {
+      let response = await fetch(
+        endpoint + "activities/delete/" + props.selectedActivityId,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + value.user.jwt
+          }
+        }
+      );
+    }
+    deleteRequest().then(() => {
+      props.setActivityView("ActivityFind");
+      tableRef.current.onQueryChange();
+    });
+  };
 
   return (
     <Grid container spacing={3} className={classes.root}>
@@ -126,17 +155,10 @@ export default function ActivityAdd(props) {
           </Select>
         </Grid>
         <Grid item xs={12}>
-          <Autocomplete
-            id="combo-box-demo"
-            options={state.contacts}
-            getOptionLabel={contact => contact.fullName}
-            style={{ width: 300 }}
-            onChange={(event, value) => setState({...state, contactId: value.contactId})}
-            renderInput={params => <TextField {...params} label="Associated Contact" variant="outlined" />}
-          />
+          <p>Associated Contact:</p><p><b>{state.contactFullName}</b></p>
         </Grid>
         <Grid item xs={12}>
-          <TextField name="notes" label="Description" onChange={handleChange} />
+          <TextField name="notes" label="Description" value={state.notes} onChange={handleChange} />
         </Grid>
       </Grid>
       <Grid container item lg={6} md={6} sm={12} spacing={2}>
@@ -161,6 +183,7 @@ export default function ActivityAdd(props) {
             label="Completed Date"
             type="date"
             defaultValue={state.completeDate}
+            value={state.completeDate}
             onChange={handleChange}
             className={classes.textField}
             InputLabelProps={{
@@ -174,6 +197,7 @@ export default function ActivityAdd(props) {
             label="Due Date"
             type="date"
             defaultValue={state.dueDate}
+            value={state.dueDate}
             onChange={handleChange}
             className={classes.textField}
             InputLabelProps={{
@@ -190,7 +214,18 @@ export default function ActivityAdd(props) {
           className={classes.margin}
           onClick={handleEdit}
         >
-          Save Activity
+          Save Changes
+        </Button>
+      </Grid>
+      <Grid item xs={4}>
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          className={classes.margin}
+          onClick={handleDelete}
+        >
+          Delete Activity
         </Button>
       </Grid>
       <Grid item xs={4}>
