@@ -13,6 +13,7 @@ import Select from "@material-ui/core/Select";
 import Chip from "@material-ui/core/Chip";
 import { ExportReactCSV } from "./ContactTable";
 import { UserContext } from "../../userContext";
+import ClearIcon from "@material-ui/icons/Clear";
 
 const endpoint = "http://localhost:5000/";
 
@@ -130,6 +131,20 @@ export default function ContactFind(props) {
               }}
             >
               Search
+            </Button>
+
+            <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            className={classes.button}
+            startIcon={<ClearIcon />}
+            onClick={() => {
+              props.refreshTable("contacts/searchByName?searchVal=&");
+              document.getElementById("search-contacts").value='';
+            }}
+            >
+              Clear
             </Button>
           </form>
         </Grid>
