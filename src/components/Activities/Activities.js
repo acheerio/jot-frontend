@@ -8,6 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import ActivityFind from "./ActivityFind";
 import ActivityEdit from "./ActivityEdit";
 import ActivityAdd from "./ActivityAdd";
+import { tableRef } from "../Activities/ActivityTable";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -26,19 +27,34 @@ export default function Activities() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const [apiRoute, setApiRoute] = React.useState("activities/all?");
+  const refreshTable = newRoute => {
+    setApiRoute(newRoute);
+    tableRef.current.onQueryChange();
+  };
   const [selectedActivityId, setSelectedActivityId] = React.useState(0);
 
   let activityViewComponent = null;
   const [activityView, setActivityView] = React.useState("ActivityFind");
   switch (activityView) {
     case "ActivityFind":
-      activityViewComponent = <ActivityFind setActivityView={setActivityView} />;
+      activityViewComponent = (
+        <ActivityFind
+          setActivityView={setActivityView}
+          refreshTable={refreshTable}
+        />
+      );
       break;
     case "ActivityAdd":
       activityViewComponent = <ActivityAdd setActivityView={setActivityView} />;
       break;
     case "ActivityEdit":
-      activityViewComponent = <ActivityEdit setActivityView={setActivityView} selectedActivityId={selectedActivityId} />;
+      activityViewComponent = (
+        <ActivityEdit
+          setActivityView={setActivityView}
+          selectedActivityId={selectedActivityId}
+        />
+      );
       break;
     default:
       activityViewComponent = <h1>No page selected...</h1>;
@@ -53,9 +69,14 @@ export default function Activities() {
         {/* Activities */}
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <ActivityTable setSelectedActivityId={setSelectedActivityId} setActivityView={setActivityView}/>
+            <ActivityTable
+              setSelectedActivityId={setSelectedActivityId}
+              setActivityView={setActivityView}
+              apiRoute={apiRoute}
+            />
           </Paper>
         </Grid>
       </Grid>
     </Container>
-  );}
+  );
+}
