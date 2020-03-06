@@ -40,7 +40,7 @@ export default function TagTable(props) {
               { title: "Attribute ID", field: "attributeId", hidden: true },
               { title: "Title", field: "title" },
               { title: "Description", field: "description" },
-              { title: "Update Date", field: "createDate" }
+              { title: "Create Date", field: "createDate" }
             ]}
             icons={tableIcons}
             options={{
@@ -71,6 +71,13 @@ export default function TagTable(props) {
                     let arr = result.content;
                     console.log(result.content);
                     let tableData = JSON.stringify(arr);
+                    arr.forEach((element) => 
+                    {
+                      if (element.createDate != null){
+                        element.createDate = element.createDate.split("T")[0];
+                      }
+                      
+                    });
                     resolve({
                       data: arr,
                       page: result.number,

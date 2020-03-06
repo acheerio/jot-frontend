@@ -72,8 +72,20 @@ export default function ActivityTable(props) {
                   .then(response => response.json())
                   .then(result => {
                     let arr = result.content;
-                    console.log(result.content)
                     let tableData = JSON.stringify(arr);
+                    console.log(arr)
+                    arr.forEach((element) => 
+                    {
+                      if (element.dueDate != null){
+                        element.dueDate = element.dueDate.split("T")[0];
+                      }
+                      if (element.completeDate != null){
+                        element.completeDate = element.completeDate.split("T")[0];
+                      }
+                    });
+                    
+
+
                     resolve({
                       data: arr,
                       page: result.number,

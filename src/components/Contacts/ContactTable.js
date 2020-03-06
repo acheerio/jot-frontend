@@ -91,7 +91,8 @@ export default function ContactTable(props) {
                   if (element.updateDate != null){
                     element.updateDate = element.updateDate.split("T")[0];
                   }
-                    
+                  console.log(element)
+
                     if (element.activities && element.activities.length > 0) {
                         element.recentActivity = element.activities.slice(-1)[0].notes;
                     }
