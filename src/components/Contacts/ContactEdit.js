@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -9,6 +9,7 @@ import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
+import {UserContext} from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -60,6 +61,7 @@ export default function ContactEdit(props) {
   const [organization, setOrganization] = React.useState("");
   const [role, setRole] = React.useState("");
   const [tags, setTags] = React.useState([]);
+  const value = useContext(UserContext);
 
   React.useEffect(() => {
     async function fetchData() {
@@ -68,15 +70,28 @@ export default function ContactEdit(props) {
       const attributesResponse = await fetch(
         endpoint +
           "attributes/all?userId=7" +
-          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC"
+          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': "Bearer " + value.user.jwt,
+            }
+          }
       );
       const attributesData = await attributesResponse.json();
       let initialAttributes = attributesData.content.map(a => a.title);
       setTags(initialAttributes);
 
       // Now get contact info
+
       const contactResponse = await fetch(
-        endpoint + "contacts/" + props.selectedContactId
+        endpoint + "contacts/" + props.selectedContactId,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': "Bearer " + value.user.jwt,
+            }
+          }
       );
       const contactData = await contactResponse.json();
       setGoogleId(contactData.googleId);
@@ -134,7 +149,10 @@ export default function ContactEdit(props) {
           role +
           attributeIdParams,
         {
-          method: "PUT"
+          method: "PUT",
+          headers: {
+            'Authorization': "Bearer " + value.user.jwt,
+          }
         }
       );
       let data = await response.json();
@@ -152,7 +170,10 @@ export default function ContactEdit(props) {
       let response = await fetch(
         endpoint + "contacts/delete/" + props.selectedContactId,
         {
-          method: "PUT"
+          method: "PUT",
+          headers: {
+            'Authorization': "Bearer " + value.user.jwt,
+          }
         }
       );
     }
@@ -165,8 +186,8 @@ export default function ContactEdit(props) {
   // Function to delete record:
 
   return (
-    <Grid container spacing={3} className={classes.root}>
-      <form>
+    <form>
+      <Grid container spacing={3} className={classes.root}>
         <Grid container item lg={6} md={6} sm={12} justify="center" spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -245,11 +266,11 @@ export default function ContactEdit(props) {
             </Select>
           </Grid>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12}>
           <Button
             variant="contained"
             color="primary"
-            size="small"
+            size="large"
             className={classes.margin}
             onClick={() => {
               updateContact();
@@ -259,35 +280,31 @@ export default function ContactEdit(props) {
           >
             Save Changes
           </Button>
-        </Grid>
-        <Grid item xs={4}>
           <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            className={classes.margin}
-            onClick={() => {
-              deleteContact();
-              console.log("Deleted contact ");
-              props.setContactView("ContactFind");
-            }}
+              variant="contained"
+              size="large"
+              className={classes.margin}
+              onClick={() => {
+                props.setContactView("ContactFind");
+              }}
+          >
+            Return to Search
+          </Button>
+          <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              className={classes.margin}
+              onClick={() => {
+                deleteContact();
+                console.log("Deleted contact ");
+                props.setContactView("ContactFind");
+              }}
           >
             Delete Contact
           </Button>
         </Grid>
-        <Grid item xs={4}>
-          <Button
-            variant="contained"
-            size="small"
-            className={classes.margin}
-            onClick={() => {
-              props.setContactView("ContactFind");
-            }}
-          >
-            Return to Contact Search
-          </Button>
-        </Grid>
-      </form>
-    </Grid>
+      </Grid>
+    </form>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -9,6 +9,7 @@ import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
+import {UserContext} from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -70,6 +71,8 @@ export default function ContactAdd(props) {
     }
   };
 
+  const value = useContext(UserContext);
+
   React.useEffect(() => {
     async function fetchData() {
       // Get possible tags for user
@@ -77,7 +80,13 @@ export default function ContactAdd(props) {
       const attributesResponse = await fetch(
         endpoint +
           "attributes/all?userId=7" +
-          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC"
+          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': "Bearer " + value.user.jwt,
+            }
+          }
       );
       const attributesData = await attributesResponse.json();
       let initialAttributes = attributesData.content.map(a => a.title);

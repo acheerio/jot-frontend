@@ -1,74 +1,36 @@
 import React, { useState, useReducer } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Authentication/Login";
 import {SwipeableDrawer} from "@material-ui/core";
 import { UserContext } from './userContext';
+import { userReducer, initialState, init } from './util/userReducer'
+import Cookies from 'js-cookie';
+import jwt_decode from 'jwt-decode';
 
 function App() {
-  const initialState = {
-          firstName: "",
-          lastName: "",
-          email: "",
-          userId: -1,
-          picUrl: ""
-      };
-  function init(value) {
-    return initialState;
-  };
 
-    function userReducer(state, action) {
-        switch (action.type) {
-            case 'updateFirstName':
-                return {
-                    firstName: action.firstName,
-                    lastName: state.lastName,
-                    email: state.email,
-                    userId: state.userId,
-                    picUrl: state.picUrl,
-                };
-            case 'updateLastName':
-                return {
-                    firstName: state.firstName,
-                    lastName: action.lastName,
-                    email: state.email,
-                    userId: state.userId,
-                    picUrl: state.picUrl,
-                };
-            case 'updateEmail':
-                return {
-                    firstName: state.firstName,
-                    lastName: state.lastName,
-                    email: action.email,
-                    userId: state.userId,
-                    picUrl: state.picUrl,
-                };
-            case 'updateUserId':
-                return {
-                    firstName: state.firstName,
-                    lastName: state.lastName,
-                    email: state.email,
-                    userId: action.userId,
-                    picUrl: state.picUrl,
-                };
-            case 'updatePicUrl':
-                return {
-                    firstName: state.firstName,
-                    lastName: state.lastName,
-                    email: state.email,
-                    userId: state.userId,
-                    picUrl: action.picUrl,
-                };
-            case 'reset':
-                return initialState;
-            default:
-                throw new Error("Not a valid case for reducer");
-        }
-    }
-
-  const [loggedInStatus, setLoggedIn] = useState(false);
   const [user, dispatch] = useReducer(userReducer, initialState, init);
+
+  let jwt = Cookies.get('jwt');
+  if (!user.loggedIn && jwt) {
+      let decoded;
+      try {
+          decoded = jwt_decode(jwt);
+          dispatch({
+              type: 'updateFromJwt',
+              loggedIn: true,
+              firstName: decoded.firstName,
+              lastName: decoded.lastName,
+              email: decoded.emailAddress,
+              userId: decoded.userId,
+              jwt: jwt });
+      } catch (err) {
+        console.log("Invalid JWT");
+        console.log(err);
+      }
+  }
 
   return (
     <div>
@@ -79,20 +41,14 @@ function App() {
                         exact
                         path={"/login"}
                         render={props => (
-                            <Login
-                                {...props}
-                                loggedInStatus={loggedInStatus}
-                            />
-                        )}
+                            !user.loggedIn ?
+                                <Login {...props} /> : <Redirect to="/" />)}
                     />
                     <Route
                         exact
                         path={"/"}
-                        render={props => (
-                            <Dashboard
-                                {...props}
-                                loggedInStatus={loggedInStatus}
-                            />
+                        render={(props) => (
+                            user.loggedIn ? (<Dashboard {...props} />) : (<Redirect to="/login" />)
                         )}
                     />
                 </Switch>

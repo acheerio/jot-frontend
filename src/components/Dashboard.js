@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import clsx from "clsx";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,6 +10,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -22,8 +23,10 @@ import Typography from "@material-ui/core/Typography";
 import Activities from "./Activities/Activities";
 import Contacts from "./Contacts/Contacts";
 import Tags from "./Tags/Tags";
-import GoogleLogin from "react-google-login";
 import Paper from "@material-ui/core/Paper";
+import { UserContext } from "../userContext";
+import { Redirect } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const drawerWidth = 240;
 
@@ -58,6 +61,9 @@ const useStyles = makeStyles(theme => ({
   },
   menuButton: {
     marginRight: 36
+  },
+  logoutButton: {
+    margin: 20
   },
   menuButtonHidden: {
     display: "none"
@@ -95,10 +101,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Dashboard() {
   const classes = useStyles();
-  let clientId = '924098505527-ta2u3pvgjksj497p9lu7rcahkvfoq1vs.apps.googleusercontent.com';
-  const responseGoogle = (response) => {
-    console.log(response);
-  };
 
   // Code to control drawer open and closing
   const [open, setOpen] = React.useState(true);
@@ -126,8 +128,25 @@ export default function Dashboard() {
       viewComponent = <h1>No page selected...</h1>;
   }
 
+  const {dispatch} = useContext(UserContext);
+
+  function logout() {
+    // remove cookie
+    Cookies.remove('jwt');
+    // clear userContext
+    // redirect to login page
+    if (window.gapi) {
+      console.log("auth2");
+      let auth2 = window.gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        dispatch({type: 'reset'});
+      });
+    }
+  }
   // Actual JSX to be returned to render on the page
   return (
+      <UserContext.Consumer>
+        {(value)=>(
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -156,13 +175,8 @@ export default function Dashboard() {
           >
             Jot
           </Typography>
-          <GoogleLogin
-              clientId={clientId}
-              buttonText="Register or Login with Google  "
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-              cookiePolicy={'single_host_origin'}
-          />
+          <Typography>Hello {value.user.firstName}!</Typography>
+          <Button variant="contained" className={classes.logoutButton} onClick={logout}>Logout</Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -219,6 +233,7 @@ export default function Dashboard() {
         <div className={classes.appBarSpacer} />
         {viewComponent}
       </main>
-    </div>
+    </div>)}
+      </UserContext.Consumer>
   );
 }
