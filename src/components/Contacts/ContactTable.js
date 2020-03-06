@@ -61,6 +61,7 @@ export default function ContactTable(props) {
           defaultSort: "desc",
           search: false,
           exportButton: true,
+          sorting: false
           
         }}
         data={query =>
@@ -103,6 +104,7 @@ export default function ContactTable(props) {
                 });
                 //console.log("convert back to json");
                 let tableData = JSON.stringify(arr);
+                console.log(arr);
                 //console.log("conversion completed, json =");
                 //console.log(tableData);
                 resolve({
