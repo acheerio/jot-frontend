@@ -40,7 +40,7 @@ export default function ActivityTable(props) {
               { title: "Activity ID", field: "activityId", hidden: true },
               { title: "Associated Contact", field: "contact.fullName" },
               { title: "Type", field: "type" },
-              { title: "Notes", field: "notes" },
+              { title: "Description", field: "notes" },
               { title: "Status", field: "status" },
               { title: "Completed Date", field: "completeDate" },
               { title: "Due Date", field: "dueDate" },
@@ -54,7 +54,7 @@ export default function ActivityTable(props) {
             }}
             data={query =>
               new Promise((resolve, reject) => {
-                query.orderBy = "notes";
+                query.orderBy = props.sortField;
                 query.orderDirection = "asc";
                 let url = endpoint + props.apiRoute;
                 url +=  "userId=" + value.user.userId;

@@ -28,6 +28,13 @@ export default function Activities() {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const [apiRoute, setApiRoute] = React.useState("activities/all?");
+  const [sortField, setSortField] = React.useState("notes");
+
+  const changeSort = ((newSortField) => {
+    setSortField(newSortField);
+    tableRef.current.onQueryChange();
+  });
+
   const refreshTable = newRoute => {
     setApiRoute(newRoute);
     tableRef.current.onQueryChange();
@@ -42,6 +49,7 @@ export default function Activities() {
         <ActivityFind
           setActivityView={setActivityView}
           refreshTable={refreshTable}
+          changeSort={changeSort}
         />
       );
       break;
@@ -73,6 +81,7 @@ export default function Activities() {
               setSelectedActivityId={setSelectedActivityId}
               setActivityView={setActivityView}
               apiRoute={apiRoute}
+              sortField={sortField}
             />
           </Paper>
         </Grid>

@@ -63,6 +63,10 @@ export default function ActivityFind(props) {
     setSelectedType(event.target.value);
   };
 
+  const handleSort = event => {
+    props.changeSort(event.target.value);
+  };
+
   return (
     <div>
       <Grid container spacing={1}>
@@ -106,6 +110,27 @@ export default function ActivityFind(props) {
               <MenuItem value={""}>No Filter</MenuItem>
               <MenuItem value={"Note"}>Note</MenuItem>
               <MenuItem value={"Task"}>Task</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+
+        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Sort Field</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={props.sortField}
+              onChange={handleSort}
+            >
+              <MenuItem value={"contact.firstName"}>Contact Name</MenuItem>
+              <MenuItem value={"type"}>Type</MenuItem>
+              <MenuItem value={"notes"}>Description</MenuItem>
+              <MenuItem value={"status"}>Status</MenuItem>
+              <MenuItem value={"completeDate"}>Completed Date</MenuItem>
+              <MenuItem value={"dueDate"}>Due Date</MenuItem>
+
             </Select>
           </FormControl>
         </Grid>
