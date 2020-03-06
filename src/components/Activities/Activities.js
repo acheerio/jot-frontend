@@ -26,6 +26,8 @@ export default function Activities() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const [selectedActivityId, setSelectedActivityId] = React.useState(0);
+
   let activityViewComponent = null;
   const [activityView, setActivityView] = React.useState("ActivityFind");
   switch (activityView) {
@@ -36,7 +38,7 @@ export default function Activities() {
       activityViewComponent = <ActivityAdd setActivityView={setActivityView} />;
       break;
     case "ActivityEdit":
-      activityViewComponent = <ActivityEdit setActivityView={setActivityView} />;
+      activityViewComponent = <ActivityEdit setActivityView={setActivityView} selectedActivityId={selectedActivityId} />;
       break;
     default:
       activityViewComponent = <h1>No page selected...</h1>;
@@ -51,7 +53,7 @@ export default function Activities() {
         {/* Activities */}
         <Grid item xs={12}>
           <Paper className={classes.paper}>
-            <ActivityTable />
+            <ActivityTable setSelectedActivityId={setSelectedActivityId} setActivityView={setActivityView}/>
           </Paper>
         </Grid>
       </Grid>

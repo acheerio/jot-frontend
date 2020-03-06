@@ -47,7 +47,7 @@ export default function ActivityAdd(props) {
   const [state, setState] = React.useState({
     type: "Task",
     notes: "",
-    status: "Not Started",
+    status: "Not Applicable",
     completeDate: getCurrentDate(),
     dueDate: getCurrentDate(),
     contactId: "",
@@ -63,7 +63,7 @@ export default function ActivityAdd(props) {
         endpoint + "contacts/IdAndNames?userId=3" // TODO: GET USERID FROM CONTEXT
       );
       const contactsData = await contactsResponse.json();
-      await setState({ contacts: [...state.contacts, ...contactsData] });
+      await setState({...state, contacts: [...state.contacts, ...contactsData] });
     }
     fetchData();
   }, []);
@@ -96,6 +96,7 @@ export default function ActivityAdd(props) {
     url += "&status=" + state.status;
     url += "&completeDate=" + state.completeDate;
     url += "&dueDate=" + state.dueDate;
+    url += "&contactId=" + state.contactId;
     console.log(url);
     fetch(url, { method: "post" })
       .then(response => {
@@ -125,18 +126,14 @@ export default function ActivityAdd(props) {
           </Select>
         </Grid>
         <Grid item xs={12}>
-          <InputLabel id="demo-simple-select-label">Associated Contact</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            name="contact"
-            value={state.contact}
-            onChange={handleChange}
-          >
-            {state.contacts.map((contact, index) => (
-              <MenuItem value={contact}>{contact.fullName}</MenuItem>
-            ))}
-          </Select>
+          <Autocomplete
+            id="combo-box-demo"
+            options={state.contacts}
+            getOptionLabel={contact => contact.fullName}
+            style={{ width: 300 }}
+            onChange={(event, value) => setState({...state, contactId: value.contactId})}
+            renderInput={params => <TextField {...params} label="Associated Contact" variant="outlined" />}
+          />
         </Grid>
         <Grid item xs={12}>
           <TextField name="notes" label="Description" onChange={handleChange} />
@@ -152,6 +149,7 @@ export default function ActivityAdd(props) {
             value={state.status}
             onChange={handleChange}
           >
+            <MenuItem value={"Not Applicable"}>Not Applicable</MenuItem>
             <MenuItem value={"Not Started"}>Not Started</MenuItem>
             <MenuItem value={"In Progress"}>In Progress</MenuItem>
             <MenuItem value={"Complete"}>Complete</MenuItem>

@@ -38,6 +38,7 @@ export default function ActivityTable(props) {
             title="Activities"
             columns={[
               { title: "Activity ID", field: "activityId", hidden: true },
+              { title: "Associated Contact", field: "contact.fullName" },
               { title: "Type", field: "type" },
               { title: "Notes", field: "notes" },
               { title: "Status", field: "status" },
