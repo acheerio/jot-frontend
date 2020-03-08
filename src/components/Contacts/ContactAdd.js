@@ -61,7 +61,6 @@ export default function ContactAdd(props) {
 
   const handleChange = event => {
     if (event.target.name === "tags") {
-      console.log("it was a tag!");
       setSelectedTags(event.target.value);
     } else {
       setState({
@@ -93,14 +92,12 @@ export default function ContactAdd(props) {
       setTags(initialAttributes);
     }
     fetchData();
-  }, []);
+  }, [value.user.userId, value.user.jwt]);
 
   function handleCancel(e) {
     props.setContactView("ContactFind");
   }
   function handleAdd(e) {
-    console.log(state);
-    console.log(JSON.stringify(state));
     let attributeIdParams = "";
     selectedTags.forEach(tag => {
       attributeIdParams += "&attributeTitle=" + tag;
@@ -115,19 +112,14 @@ export default function ContactAdd(props) {
     url += "&organization=" + state.org;
     url += "&role=" + state.role;
     url += attributeIdParams;
-    console.log(url);
     fetch(url, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + value.user.jwt
       }
-    })
-      .then(response => {
-        tableRef.current && tableRef.current.onQueryChange();
-      })
-      .then(response => {
-        console.log("success!");
-      });
+    }).then(() => {
+      tableRef.current && tableRef.current.onQueryChange();
+    });
     props.setContactView("ContactFind");
   }
 

@@ -63,7 +63,7 @@ const sortsHash = {
 
 export default function ContactFind(props) {
   const classes = useStyles();
-  const value = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   const [selectedTag, setSelectedTag] = React.useState([]);
   const [tags, setTags] = React.useState([]);
@@ -83,12 +83,12 @@ export default function ContactFind(props) {
       const attributesResponse = await fetch(
         endpoint +
           "attributes/all?userId=" +
-          value.user.userId +
+        userContext.user.userId +
           "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
         {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );
@@ -110,7 +110,7 @@ export default function ContactFind(props) {
       }
     }
     fetchData();
-  }, [value.user.jwt, value.user.userId]);
+  }, [userContext.user.jwt, userContext.user.userId]);
 
   return (
     <div>

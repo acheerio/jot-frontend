@@ -33,7 +33,7 @@ export let tableRef = React.createRef();
 export default function ContactTable(props) {
   return (
     <UserContext.Consumer>
-      {value => (
+      {userContext => (
         <React.Fragment>
           <MaterialTable
             tableRef={tableRef}
@@ -60,16 +60,16 @@ export default function ContactTable(props) {
             data={query =>
               new Promise((resolve, reject) => {
                 let url = endpoint + props.apiRoute;
-                url += "userId=" + value.user.userId;
+                url += "userId=" + userContext.user.userId;
                 url += "&sortField=" + props.sortDirection;
-                url += "&sortDirection=" + query.orderDirection;
+                url += "&sortDirection=ASC";
                 url += "&pageSize=" + query.pageSize;
                 url += "&pageNum=" + query.page;
 
                 fetch(url, {
                   method: "GET",
                   headers: {
-                    Authorization: "Bearer " + value.user.jwt
+                    Authorization: "Bearer " + userContext.user.jwt
                   }
                 })
                   .then(response => response.json())

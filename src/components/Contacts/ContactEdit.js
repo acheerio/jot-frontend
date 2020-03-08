@@ -165,7 +165,7 @@ export default function ContactEdit(props) {
   // Function to update record:
   const deleteContact = () => {
     async function deleteRequest() {
-      let response = await fetch(
+      await fetch(
         endpoint + "contacts/delete/" + props.selectedContactId,
         {
           method: "DELETE",
