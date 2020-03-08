@@ -7,9 +7,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "../Activities/ActivityTable";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import { UserContext } from "../../userContext";
-import AddCircleIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -34,12 +32,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
 export default function ActivityAdd(props) {
   const classes = useStyles();
-  const value = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   // Manage form to add new record
   const [state, setState] = React.useState({
@@ -53,17 +48,14 @@ export default function ActivityAdd(props) {
 
   React.useEffect(() => {
     async function fetchData() {
-      console.log("useEffect fetchData firing...");
       let url = endpoint + "activities/" + props.selectedActivityId;
-      console.log(url);
       const attributesResponse = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: "Bearer " + value.user.jwt
+          Authorization: "Bearer " + userContext.user.jwt
         }
       });
       const responseData = await attributesResponse.json();
-      console.log(responseData);
       let shortCompleteDate = "";
       let shortDueDate = "";
       if (responseData.completeDate) {
@@ -82,7 +74,7 @@ export default function ActivityAdd(props) {
       });
     }
     fetchData();
-  }, [props.selectedActivityId]);
+  }, [props.selectedActivityId, userContext.user.jwt]);
 
   const handleChange = event => {
     setState({
@@ -91,40 +83,38 @@ export default function ActivityAdd(props) {
     });
   };
 
-  function handleEdit(e) {
+  function handleEdit() {
     let url = endpoint + "activities/update?";
     url += "activityId=" + props.selectedActivityId;
     url += "&type=" + state.type;
     url += "&notes=" + state.notes;
     url += "&status=" + state.status;
-    if (state.completeDate != null && state.dueDate != "null") {
+    if (state.completeDate != null && state.dueDate !== "null") {
       url += "&completeDate=" + state.completeDate;
     }
-    if (state.dueDate != null && state.dueDate != "null") {
+    if (state.dueDate != null && state.dueDate !== "null") {
       url += "&dueDate=" + state.dueDate;
     }
-    console.log(url);
     fetch(url, {
       method: "PUT",
       headers: {
-        Authorization: "Bearer " + value.user.jwt
+        Authorization: "Bearer " + userContext.user.jwt
       }
-    })
-      .then(() => {
-        tableRef.current && tableRef.current.onQueryChange();
-        props.setActivityView("ActivityFind");
-      })
+    }).then(() => {
+      tableRef.current && tableRef.current.onQueryChange();
+      props.setActivityView("ActivityFind");
+    });
   }
 
   // Function to update record:
   const handleDelete = () => {
     async function deleteRequest() {
-      let response = await fetch(
+      await fetch(
         endpoint + "activities/delete/" + props.selectedActivityId,
         {
           method: "DELETE",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );
@@ -152,10 +142,18 @@ export default function ActivityAdd(props) {
           </Select>
         </Grid>
         <Grid item xs={12}>
-          <p>Associated Contact:</p><p><b>{state.contactFullName}</b></p>
+          <p>Associated Contact:</p>
+          <p>
+            <b>{state.contactFullName}</b>
+          </p>
         </Grid>
         <Grid item xs={12}>
-          <TextField name="notes" label="Description" value={state.notes} onChange={handleChange} />
+          <TextField
+            name="notes"
+            label="Description"
+            value={state.notes}
+            onChange={handleChange}
+          />
         </Grid>
       </Grid>
       <Grid container item lg={6} md={6} sm={12} spacing={2}>

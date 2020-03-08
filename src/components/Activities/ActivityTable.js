@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { forwardRef } from "react";
 import MaterialTable from "material-table";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -62,7 +62,6 @@ export default function ActivityTable(props) {
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
                 url += "&pageNum=" + query.page;
-                console.log(query);
                 fetch(url, {
                   method: "GET",
                   headers: {
@@ -72,8 +71,6 @@ export default function ActivityTable(props) {
                   .then(response => response.json())
                   .then(result => {
                     let arr = result.content;
-                    let tableData = JSON.stringify(arr);
-                    console.log(arr);
                     if (arr && arr.length > 0) {
                       arr.forEach(element => {
                         if (element.dueDate != null) {

@@ -33,12 +33,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
 export default function ActivityAdd(props) {
   const classes = useStyles();
-  const value = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   // Manage form to add new record
   const [state, setState] = React.useState({
@@ -51,17 +48,14 @@ export default function ActivityAdd(props) {
     contacts: []
   });
 
-  //const [contacts, setContacts] = React.useState([]);
-
   React.useEffect(() => {
     async function fetchData() {
-      console.log("Getting contact ids and names");
       const contactsResponse = await fetch(
-        endpoint + "contacts/IdAndNames?userId=" + value.user.userId,
+        endpoint + "contacts/IdAndNames?userId=" + userContext.user.userId,
         {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );
@@ -72,7 +66,7 @@ export default function ActivityAdd(props) {
       });
     }
     fetchData();
-  }, []);
+  }, [userContext.user.userId, userContext.user.jwt]);
 
   const handleChange = event => {
     setState({
@@ -93,33 +87,28 @@ export default function ActivityAdd(props) {
     });
   }
 
-  function handleAdd(e) {
+  function handleAdd() {
     let url = endpoint + "activities/add?";
-    url += "userId=" + value.user.userId;
+    url += "userId=" + userContext.user.userId;
     url += "&type=" + state.type;
     url += "&notes=" + state.notes;
     url += "&status=" + state.status;
-    if (state.completeDate != null && state.dueDate != "null") {
+    if (state.completeDate != null && state.dueDate !== "null") {
       url += "&completeDate=" + state.completeDate;
     }
-    if (state.dueDate != null && state.dueDate != "null") {
+    if (state.dueDate != null && state.dueDate !== "null") {
       url += "&dueDate=" + state.dueDate;
     }
     url += "&contactId=" + state.contactId;
-    console.log(url);
     fetch(url, {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + value.user.jwt
+        Authorization: "Bearer " + userContext.user.jwt
       }
-    })
-      .then(response => {
-        tableRef.current && tableRef.current.onQueryChange();
-        props.setActivityView("ActivityFind");
-      })
-      .then(response => {
-        console.log("success!");
-      });
+    }).then(() => {
+      tableRef.current && tableRef.current.onQueryChange();
+      props.setActivityView("ActivityFind");
+    });
     clear();
   }
 

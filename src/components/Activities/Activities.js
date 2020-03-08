@@ -30,10 +30,10 @@ export default function Activities() {
   const [apiRoute, setApiRoute] = React.useState("activities/all?");
   const [sortField, setSortField] = React.useState("notes");
 
-  const changeSort = ((newSortField) => {
+  const changeSort = newSortField => {
     setSortField(newSortField);
     tableRef.current.onQueryChange();
-  });
+  };
 
   const refreshTable = newRoute => {
     setApiRoute(newRoute);
