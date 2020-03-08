@@ -28,25 +28,21 @@ export default function Contacts() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const updateTableOnDataChange = () => {
-    this.forceUpdate();
-  };
-
   // Code to set currently selected contact:
   const [selectedContactId, setSelectedContactId] = React.useState(0);
 
   // Determine data table route
   const [apiRoute, setApiRoute] = React.useState("contacts/all?");
   const [sortDirection, setSortDirection] = React.useState("contactId");
-  const refreshTable = ((newRoute) => {
+  const refreshTable = newRoute => {
     setApiRoute(newRoute);
     tableRef.current.onQueryChange();
-  });
+  };
 
-  const changeSort = ((newSort) => {
+  const changeSort = newSort => {
     setSortDirection(newSort);
     tableRef.current.onQueryChange();
-  })
+  };
 
   // Code to control which page is shown to user
   let contactViewComponent = null;
@@ -59,7 +55,6 @@ export default function Contacts() {
           refreshTable={refreshTable}
           changeSort={changeSort}
           sortDirection={sortDirection}
-
         />
       );
       break;
@@ -71,9 +66,7 @@ export default function Contacts() {
         <ContactEdit
           setContactView={setContactView}
           selectedContactId={selectedContactId}
-          updateTableOnDataChange={updateTableOnDataChange}
           refreshTable={refreshTable}
-
         />
       );
       break;
@@ -84,11 +77,9 @@ export default function Contacts() {
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
-        {/* Action Area */}
         <Grid item xs={12}>
           <Paper className={fixedHeightPaper}>{contactViewComponent}</Paper>
         </Grid>
-        {/* Contacts */}
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <ContactTable
@@ -99,8 +90,6 @@ export default function Contacts() {
               setApiRoute={setApiRoute}
               changeSort={changeSort}
               sortDirection={sortDirection}
-
-
             />
           </Paper>
         </Grid>

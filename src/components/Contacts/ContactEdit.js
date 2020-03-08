@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -9,7 +9,7 @@ import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import MenuItem from "@material-ui/core/MenuItem";
 import { tableRef } from "./ContactTable";
-import {UserContext} from "../../userContext";
+import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -68,14 +68,15 @@ export default function ContactEdit(props) {
       // First get possible tags for user
       const attributesResponse = await fetch(
         endpoint +
-          "attributes/all?userId=" + value.user.userId +
+          "attributes/all?userId=" +
+          value.user.userId +
           "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
-          {
-            method: 'GET',
-            headers: {
-              'Authorization': "Bearer " + value.user.jwt,
-            }
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + value.user.jwt
           }
+        }
       );
       const attributesData = await attributesResponse.json();
       let initialAttributes = attributesData.content.map(a => a.title);
@@ -85,12 +86,12 @@ export default function ContactEdit(props) {
 
       const contactResponse = await fetch(
         endpoint + "contacts/" + props.selectedContactId,
-          {
-            method: 'GET',
-            headers: {
-              'Authorization': "Bearer " + value.user.jwt,
-            }
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + value.user.jwt
           }
+        }
       );
       const contactData = await contactResponse.json();
       setGoogleId(contactData.googleId);
@@ -150,7 +151,7 @@ export default function ContactEdit(props) {
         {
           method: "PUT",
           headers: {
-            'Authorization': "Bearer " + value.user.jwt,
+            Authorization: "Bearer " + value.user.jwt
           }
         }
       );
@@ -169,7 +170,7 @@ export default function ContactEdit(props) {
         {
           method: "DELETE",
           headers: {
-            'Authorization': "Bearer " + value.user.jwt,
+            Authorization: "Bearer " + value.user.jwt
           }
         }
       );
@@ -244,7 +245,12 @@ export default function ContactEdit(props) {
               multiple
               value={selectedTags}
               onChange={handleChange}
-              onClose={() => {console.log("Selected tags: "); console.log(selectedTags); console.log("All tags: "); console.log(tags);}}
+              onClose={() => {
+                console.log("Selected tags: ");
+                console.log(selectedTags);
+                console.log("All tags: ");
+                console.log(tags);
+              }}
               input={<Input id="select-multiple-chip" />}
               renderValue={selected => (
                 <div className={classes.chips}>
@@ -278,25 +284,25 @@ export default function ContactEdit(props) {
             Save Changes
           </Button>
           <Button
-              variant="contained"
-              size="large"
-              className={classes.margin}
-              onClick={() => {
-                props.setContactView("ContactFind");
-              }}
+            variant="contained"
+            size="large"
+            className={classes.margin}
+            onClick={() => {
+              props.setContactView("ContactFind");
+            }}
           >
             Return to Search
           </Button>
           <Button
-              variant="contained"
-              color="secondary"
-              size="large"
-              className={classes.margin}
-              onClick={() => {
-                deleteContact();
-                console.log("Deleted contact ");
-                props.setContactView("ContactFind");
-              }}
+            variant="contained"
+            color="secondary"
+            size="large"
+            className={classes.margin}
+            onClick={() => {
+              deleteContact();
+              console.log("Deleted contact ");
+              props.setContactView("ContactFind");
+            }}
           >
             Delete Contact
           </Button>

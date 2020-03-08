@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React from "react";
 import { forwardRef } from "react";
 import MaterialTable from "material-table";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -10,8 +10,7 @@ import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
-import {UserContext} from "../../userContext";
-
+import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -25,112 +24,109 @@ const tableIcons = {
     <ChevronLeft {...props} ref={ref} />
   )),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props}  ref={ref}  />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />)
 };
 export let tableRef = React.createRef();
 
 export default function ContactTable(props) {
-  const [selectedValue, setSelectedValue] = React.useState([]);
-  const handleChange = event => {
-    setSelectedValue(event.target.value);
-  }
- 
   return (
-      <UserContext.Consumer>
-          {(value)=>(
-    <React.Fragment>
-      <MaterialTable
-        tableRef={tableRef}
-        title="Contacts"
-        columns={[
-          { title: "Contact ID", field: "contactId", hidden: true },
-          { title: "First Name", field: "firstName" },
-          { title: "Last Name", field: "lastName" },
-          { title: "Organization", field: "organization" },
-          { title: "Role", field: "role" },
-          { title: "Update Date", field: "updateDate" },
-          { title: "Tags", field: "attributeDisplay"},
-          { title: "Recent Updates", field: "recentActivity" }
-        ]}
-        icons={tableIcons}
-        options={{
-          pageSize: 5,
-          initialPage: 0,
-          defaultSort: "desc",
-          search: false,
-          exportButton: true,
-          sorting: false
-          
-        }}
-        data={query =>
-          new Promise((resolve, reject) => {
-            query.orderBy = "contactId";
-            query.orderDirection = "asc";
-            let url = endpoint + props.apiRoute;
-            url += "userId=" + value.user.userId;
-            url += "&sortField=" + props.sortDirection;
-            url += "&sortDirection=" + query.orderDirection;
-            url += "&pageSize=" + query.pageSize;
-            url += "&pageNum=" + query.page;
+    <UserContext.Consumer>
+      {value => (
+        <React.Fragment>
+          <MaterialTable
+            tableRef={tableRef}
+            title="Contacts"
+            columns={[
+              { title: "Contact ID", field: "contactId", hidden: true },
+              { title: "First Name", field: "firstName" },
+              { title: "Last Name", field: "lastName" },
+              { title: "Organization", field: "organization" },
+              { title: "Role", field: "role" },
+              { title: "Update Date", field: "updateDate" },
+              { title: "Tags", field: "attributeDisplay" },
+              { title: "Recent Updates", field: "recentActivity" }
+            ]}
+            icons={tableIcons}
+            options={{
+              pageSize: 5,
+              initialPage: 0,
+              defaultSort: "desc",
+              search: false,
+              exportButton: true,
+              sorting: false
+            }}
+            data={query =>
+              new Promise((resolve, reject) => {
+                let url = endpoint + props.apiRoute;
+                url += "userId=" + value.user.userId;
+                url += "&sortField=" + props.sortDirection;
+                url += "&sortDirection=" + query.orderDirection;
+                url += "&pageSize=" + query.pageSize;
+                url += "&pageNum=" + query.page;
 
-            console.log(query);
-            console.log("jwt from header");
-            console.log("Bearer " + value.user.jwt);
-            fetch(url, {
-              method: 'GET',
-              headers: {
-                'Authorization': "Bearer " + value.user.jwt,
-              }
-            })
-              .then(response => response.json())
-              .then(result => {
-                let arr = result.content;
-                arr.forEach((element) => {
-                  if (element.updateDate != null){
-                    element.updateDate = element.updateDate.split("T")[0];
+                fetch(url, {
+                  method: "GET",
+                  headers: {
+                    Authorization: "Bearer " + value.user.jwt
                   }
-                  console.log(element)
-
-                    if (element.activities && element.activities.length > 0) {
-                        element.recentActivity = element.activities.slice(-1)[0].notes;
+                })
+                  .then(response => response.json())
+                  .then(result => {
+                    let arr = result.content;
+                    if (arr && arr.length > 0) {
+                      arr.forEach(element => {
+                        // Reformat dates
+                        if (element.updateDate != null) {
+                          element.updateDate = element.updateDate.split("T")[0];
+                        }
+                        // Get only most recent activity
+                        if (
+                          element.activities &&
+                          element.activities.length > 0
+                        ) {
+                          element.recentActivity = element.activities.slice(
+                            -1
+                          )[0].notes;
+                        } else {
+                          element.recentActivity = null;
+                        }
+                        if (
+                          element.attributes &&
+                          element.attributes.length > 0
+                        ) {
+                          element.attributeList = [];
+                          element.attributes.forEach(e => {
+                            element.attributeList.push(e.title);
+                          });
+                          element.attributeDisplay = element.attributeList.join(
+                            ", "
+                          );
+                        }
+                      });
                     }
-                    else {
-                        element.recentActivity = null;
-                    }
-                    if (element.attributes && element.attributes.length > 0) {
-                      element.attributeList = [];
-                      element.attributes.forEach(e => {element.attributeList.push(e.title)});
-                      element.attributeDisplay = element.attributeList.join(", ");
-                    }
-                });
-                //console.log("convert back to json");
-                let tableData = JSON.stringify(arr);
-                console.log(arr);
-                //console.log("conversion completed, json =");
-                //console.log(tableData);
-                resolve({
-                  data: arr,
-                  page: result.number,
-                  totalCount: result.totalElements
-                });
-              });
-          })
-        }
-        actions={[
-          {
-            icon: Edit,
-            tooltip: "Save User",
-            onClick: (event, rowData) => {
-              props.setSelectedContactId(rowData.contactId);
-              props.setContactView("ContactEdit");
+                    resolve({
+                      data: arr,
+                      page: result.number,
+                      totalCount: result.totalElements
+                    });
+                  });
+              })
             }
-          }
-        ]}
-      />
-      
-    </React.Fragment>)}
+            actions={[
+              {
+                icon: Edit,
+                tooltip: "Save User",
+                onClick: (event, rowData) => {
+                  props.setSelectedContactId(rowData.contactId);
+                  props.setContactView("ContactEdit");
+                }
+              }
+            ]}
+          />
+        </React.Fragment>
+      )}
     </UserContext.Consumer>
   );
 }

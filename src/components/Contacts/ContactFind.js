@@ -1,19 +1,18 @@
-import React, { useContext } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import SearchIcon from "@material-ui/icons/Search";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import Button from "@material-ui/core/Button";
+import Chip from "@material-ui/core/Chip";
+import ClearIcon from "@material-ui/icons/Clear";
+import FormControl from "@material-ui/core/FormControl";
+import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
+import React, { useContext } from "react";
+import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
-import Chip from "@material-ui/core/Chip";
-import { ExportReactCSV } from "./ContactTable";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../../userContext";
-import ClearIcon from "@material-ui/icons/Clear";
 
 const endpoint = "http://localhost:5000/";
 
@@ -51,62 +50,67 @@ const MenuProps = {
     }
   }
 };
-// function loadTags(){
-//   query => 
-//   new Promise((resolve, reject) => {
-//     let url = 'http:'
-//   })
-// }
-let tagsHash = {}
-const sorts = ["First Name", "Last Name", "Organization", "Role"]
-const sortsHash = {"First Name": "firstName", "Last Name": "lastName", "Organization": "organization",
- "Role": "role", "Update Date": "updateDate"}
+
+let tagsHash = {};
+const sorts = ["First Name", "Last Name", "Organization", "Role"];
+const sortsHash = {
+  "First Name": "firstName",
+  "Last Name": "lastName",
+  Organization: "organization",
+  Role: "role",
+  "Update Date": "updateDate"
+};
 
 export default function ContactFind(props) {
   const classes = useStyles();
-  // const tags = loadTags();
+  const value = useContext(UserContext);
+
   const [selectedTag, setSelectedTag] = React.useState([]);
   const [tags, setTags] = React.useState([]);
-
-  const [searchValue, setSearchValue] = React.useState('');
-
+  const [searchValue, setSearchValue] = React.useState("");
 
   const handleChange = event => {
     setSelectedTag(event.target.value);
-    console.log(selectedTag)
   };
 
   const handleSort = event => {
     props.changeSort(sortsHash[event.target.value]);
-  }
-
-  const value = useContext(UserContext);
+  };
 
   React.useEffect(() => {
     async function fetchData() {
       // Get possible tags for user
       const attributesResponse = await fetch(
         endpoint +
-          "attributes/all?userId=" + value.user.userId +
+          "attributes/all?userId=" +
+          value.user.userId +
           "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
-          {
-            method: 'GET',
-            headers: {
-              'Authorization': "Bearer " + value.user.jwt,
-            }
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + value.user.jwt
           }
+        }
       );
       const attributesData = await attributesResponse.json();
-      console.log(attributesData);
-      let attributeIds = attributesData.content.map(b => b.attributeId);
-      console.log(attributeIds);
-      let initialAttributes = attributesData.content.map(a => a.title);
-      tagsHash = Object.fromEntries(initialAttributes.map((_, i) => [initialAttributes[i], attributeIds[i]]));
-
-      setTags(initialAttributes);
+      if (
+        attributesData &&
+        attributesData.content &&
+        attributesData.content.length > 0
+      ) {
+        let attributeIds = attributesData.content.map(b => b.attributeId);
+        let initialAttributes = attributesData.content.map(a => a.title);
+        tagsHash = Object.fromEntries(
+          initialAttributes.map((_, i) => [
+            initialAttributes[i],
+            attributeIds[i]
+          ])
+        );
+        setTags(initialAttributes);
+      }
     }
     fetchData();
-  }, []);
+  }, [value.user.jwt, value.user.userId]);
 
   return (
     <div>
@@ -118,7 +122,9 @@ export default function ContactFind(props) {
               label="Search Contacts"
               variant="outlined"
               size="small"
-              onChange={(e) => {setSearchValue(e.target.value)}}
+              onChange={e => {
+                setSearchValue(e.target.value);
+              }}
             />
             <Button
               variant="contained"
@@ -127,22 +133,24 @@ export default function ContactFind(props) {
               className={classes.button}
               startIcon={<SearchIcon />}
               onClick={() => {
-                props.refreshTable("contacts/searchByName?searchVal=" + searchValue + "&");
+                props.refreshTable(
+                  "contacts/searchByName?searchVal=" + searchValue + "&"
+                );
               }}
             >
               Search
             </Button>
 
             <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            className={classes.button}
-            startIcon={<ClearIcon />}
-            onClick={() => {
-              props.refreshTable("contacts/searchByName?searchVal=&");
-              document.getElementById("search-contacts").value='';
-            }}
+              variant="contained"
+              color="primary"
+              size="large"
+              className={classes.button}
+              startIcon={<ClearIcon />}
+              onClick={() => {
+                props.refreshTable("contacts/searchByName?searchVal=&");
+                document.getElementById("search-contacts").value = "";
+              }}
             >
               Clear
             </Button>
@@ -151,24 +159,24 @@ export default function ContactFind(props) {
 
         <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-mutiple-chip-label">Filter By Tags</InputLabel>
+            <InputLabel id="demo-multiple-chip-label">
+              Filter By Tags
+            </InputLabel>
             <Select
-              labelId="demo-mutiple-chip-label"
-              id="demo-mutiple-chip"
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
               multiple
               value={selectedTag}
               onChange={handleChange}
               onClick={() => {
-                if (tagsHash[selectedTag[0]] === undefined){
-                  return
-                }
-                else {
-                  let list = []
-                  for (let i = 0; i < selectedTag.length; i++){
-                    list.push(tagsHash[selectedTag[i]])
+                if (tagsHash[selectedTag[0]] !== undefined) {
+                  let list = [];
+                  for (let i = 0; i < selectedTag.length; i++) {
+                    list.push(tagsHash[selectedTag[i]]);
                   }
-                  props.refreshTable("contacts/byAttributes?attributeId=" + list + "&");
-
+                  props.refreshTable(
+                    "contacts/byAttributes?attributeId=" + list + "&"
+                  );
                 }
               }}
               input={<Input id="select-multiple-chip" />}
@@ -189,13 +197,12 @@ export default function ContactFind(props) {
             </Select>
           </FormControl>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-mutiple-chip-label">Sort by</InputLabel>
+            <InputLabel id="demo-multiple-chip-label">Sort by</InputLabel>
             <Select
-              labelId="demo-mutiple-chip-label"
-              id="demo-mutiple-chip"
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
               value={props.selectedSort}
               onChange={handleSort}
-            
             >
               {sorts.map(sort => (
                 <MenuItem key={sort} value={sort}>
@@ -220,9 +227,7 @@ export default function ContactFind(props) {
             Add New Contact
           </Button>
         </Grid>
-        
       </Grid>
     </div>
-    
   );
 }
