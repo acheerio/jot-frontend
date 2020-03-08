@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function TagEdit(props) {
   const classes = useStyles();
-  const value = useContext(UserContext);
+  const userContext = useContext(UserContext);
   const [state, setState] = React.useState({
     title: "",
     description: ""
@@ -46,7 +46,7 @@ export default function TagEdit(props) {
       const attributesResponse = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: "Bearer " + value.user.jwt
+          Authorization: "Bearer " + userContext.user.jwt
         }
       });
       const responseData = await attributesResponse.json();
@@ -57,7 +57,7 @@ export default function TagEdit(props) {
       });
     }
     fetchData();
-  }, [props.selectedTagId]);
+  }, [props.selectedTagId, userContext.user.jwt]);
 
   const handleChange = event => {
     setState({
@@ -66,34 +66,33 @@ export default function TagEdit(props) {
     });
   };
 
-  function handleEdit(e) {
+  function handleEdit() {
     let url = endpoint + "attributes/update/";
     url += props.selectedTagId + "?";
-    url += "userId=" + value.user.userId;
+    url += "userId=" + userContext.user.userId;
     url += "&title=" + state.title;
     url += "&description=" + state.description;
     console.log(url);
     fetch(url, {
       method: "PUT",
       headers: {
-        Authorization: "Bearer " + value.user.jwt
+        Authorization: "Bearer " + userContext.user.jwt
       }
-    })
-      .then(() => {
-        tableRef.current && tableRef.current.onQueryChange();
-        props.setTagView("TagAdd");
-      })
+    }).then(() => {
+      tableRef.current && tableRef.current.onQueryChange();
+      props.setTagView("TagAdd");
+    });
   }
 
   // Function to update record:
   const deleteTag = () => {
     async function deleteRequest() {
-      let response = await fetch(
+      await fetch(
         endpoint + "attributes/delete/" + props.selectedTagId,
         {
           method: "DELETE",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );

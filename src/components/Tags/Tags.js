@@ -33,7 +33,11 @@ export default function Tags() {
       break;
     case "TagEdit":
       tagViewComponent = (
-        <TagEdit setTagView={setTagView} selectedTagId={selectedTagId} setSelectedTagId={setSelectedTagId} />
+        <TagEdit
+          setTagView={setTagView}
+          selectedTagId={selectedTagId}
+          setSelectedTagId={setSelectedTagId}
+        />
       );
       break;
     default:

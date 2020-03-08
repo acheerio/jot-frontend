@@ -61,7 +61,7 @@ export default function ContactEdit(props) {
   const [organization, setOrganization] = React.useState("");
   const [role, setRole] = React.useState("");
   const [tags, setTags] = React.useState([]);
-  const value = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   React.useEffect(() => {
     async function fetchData() {
@@ -69,12 +69,12 @@ export default function ContactEdit(props) {
       const attributesResponse = await fetch(
         endpoint +
           "attributes/all?userId=" +
-          value.user.userId +
+          userContext.user.userId +
           "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
         {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );
@@ -89,7 +89,7 @@ export default function ContactEdit(props) {
         {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );
@@ -112,7 +112,7 @@ export default function ContactEdit(props) {
       setSelectedTags(initialSelectedAttributes);
     }
     fetchData();
-  }, [props.selectedContactId]);
+  }, [props.selectedContactId, userContext.user.jwt, userContext.user.userId]);
 
   // Function to update record:
   const updateContact = () => {
@@ -121,8 +121,7 @@ export default function ContactEdit(props) {
       selectedTags.forEach(tag => {
         attributeIdParams += "&attributeTitle=" + tag;
       });
-      console.log(attributeIdParams);
-      let response = await fetch(
+      await fetch(
         endpoint +
           "contacts/update/" +
           props.selectedContactId +
@@ -151,7 +150,7 @@ export default function ContactEdit(props) {
         {
           method: "PUT",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );
@@ -170,7 +169,7 @@ export default function ContactEdit(props) {
         {
           method: "DELETE",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );

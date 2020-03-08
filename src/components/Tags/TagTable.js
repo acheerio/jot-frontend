@@ -31,7 +31,7 @@ export let tableRef = React.createRef();
 export default function TagTable(props) {
   return (
     <UserContext.Consumer>
-      {value => (
+      {userContext => (
         <React.Fragment>
           <MaterialTable
             tableRef={tableRef}
@@ -54,7 +54,7 @@ export default function TagTable(props) {
                 query.orderBy = "title";
                 query.orderDirection = "asc";
                 let url = endpoint + "attributes/all?";
-                url += "userId=" + value.user.userId;
+                url += "userId=" + userContext.user.userId;
                 url += "&sortField=" + query.orderBy;
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
@@ -63,20 +63,16 @@ export default function TagTable(props) {
                 fetch(url, {
                   method: "GET",
                   headers: {
-                    Authorization: "Bearer " + value.user.jwt
+                    Authorization: "Bearer " + userContext.user.jwt
                   }
                 })
                   .then(response => response.json())
                   .then(result => {
                     let arr = result.content;
-                    console.log(result.content);
-                    let tableData = JSON.stringify(arr);
-                    arr.forEach((element) => 
-                    {
-                      if (element.createDate != null){
+                    arr.forEach(element => {
+                      if (element.createDate != null) {
                         element.createDate = element.createDate.split("T")[0];
                       }
-                      
                     });
                     resolve({
                       data: arr,

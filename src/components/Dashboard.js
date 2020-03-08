@@ -1,32 +1,29 @@
 import React, {useContext} from "react";
-import clsx from "clsx";
 
-import { makeStyles } from "@material-ui/core/styles";
+import Activities from "./Activities/Activities";
 import AppBar from "@material-ui/core/AppBar";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import Button from "@material-ui/core/Button";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import clsx from "clsx";
+import Contacts from "./Contacts/Contacts";
+import Cookies from 'js-cookie';
 import CreateIcon from "@material-ui/icons/Create";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
 import PeopleIcon from "@material-ui/icons/People";
+import Tags from "./Tags/Tags";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-
-import Activities from "./Activities/Activities";
-import Contacts from "./Contacts/Contacts";
-import Tags from "./Tags/Tags";
-import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
-import { Redirect } from 'react-router-dom';
-import Cookies from 'js-cookie';
 
 const drawerWidth = 240;
 

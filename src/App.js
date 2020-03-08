@@ -1,9 +1,8 @@
-import React, { useState, useReducer } from "react";
+import React, { useReducer } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 import Dashboard from "./components/Dashboard";
 import Login from "./components/Authentication/Login";
-import {SwipeableDrawer} from "@material-ui/core";
 import { UserContext } from './userContext';
 import { userReducer, initialState, init } from './util/userReducer'
 import Cookies from 'js-cookie';

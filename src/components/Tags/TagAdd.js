@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function TagAdd(props) {
   const classes = useStyles();
-  const value = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   const [state, setState] = React.useState({
     title: "",
@@ -53,24 +53,20 @@ export default function TagAdd(props) {
     });
   }
 
-  function handleAdd(e) {
+  function handleAdd() {
     let url = endpoint + "attributes/add?";
-    url += "userId=" + value.user.userId;
+    url += "userId=" + userContext.user.userId;
     url += "&title=" + state.title;
     url += "&description=" + state.description;
     console.log(url);
     fetch(url, {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + value.user.jwt
+        Authorization: "Bearer " + userContext.user.jwt
       }
-    })
-      .then(response => {
-        tableRef.current && tableRef.current.onQueryChange();
-      })
-      .then(response => {
-        console.log("success!");
-      });
+    }).then(() => {
+      tableRef.current && tableRef.current.onQueryChange();
+    });
     clear();
   }
 
