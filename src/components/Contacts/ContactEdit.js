@@ -169,7 +169,7 @@ export default function ContactEdit(props) {
       let response = await fetch(
         endpoint + "contacts/delete/" + props.selectedContactId,
         {
-          method: "PUT",
+          method: "DELETE",
           headers: {
             'Authorization': "Bearer " + value.user.jwt,
           }

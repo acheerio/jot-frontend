@@ -94,7 +94,7 @@ export default function TagEdit(props) {
       let response = await fetch(
         endpoint + "attributes/delete/" + props.selectedTagId,
         {
-          method: "PUT",
+          method: "DELETE",
           headers: {
             Authorization: "Bearer " + value.user.jwt
           }

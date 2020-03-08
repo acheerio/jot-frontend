@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { forwardRef } from "react";
 import MaterialTable from "material-table";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
@@ -9,7 +9,7 @@ import Edit from "@material-ui/icons/Edit";
 import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
 import Search from "@material-ui/icons/Search";
-import {UserContext} from "../../userContext";
+import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -31,7 +31,7 @@ export let tableRef = React.createRef();
 export default function ActivityTable(props) {
   return (
     <UserContext.Consumer>
-      {(value)=>(
+      {value => (
         <React.Fragment>
           <MaterialTable
             tableRef={tableRef}
@@ -43,7 +43,7 @@ export default function ActivityTable(props) {
               { title: "Description", field: "notes" },
               { title: "Status", field: "status" },
               { title: "Completed Date", field: "completeDate" },
-              { title: "Due Date", field: "dueDate" },
+              { title: "Due Date", field: "dueDate" }
             ]}
             icons={tableIcons}
             options={{
@@ -57,7 +57,7 @@ export default function ActivityTable(props) {
                 query.orderBy = props.sortField;
                 query.orderDirection = "asc";
                 let url = endpoint + props.apiRoute;
-                url +=  "userId=" + value.user.userId;
+                url += "userId=" + value.user.userId;
                 url += "&sortField=" + query.orderBy;
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
@@ -73,18 +73,19 @@ export default function ActivityTable(props) {
                   .then(result => {
                     let arr = result.content;
                     let tableData = JSON.stringify(arr);
-                    console.log(arr)
-                    arr.forEach((element) => 
-                    {
-                      if (element.dueDate != null){
-                        element.dueDate = element.dueDate.split("T")[0];
-                      }
-                      if (element.completeDate != null){
-                        element.completeDate = element.completeDate.split("T")[0];
-                      }
-                    });
-                    
-
+                    console.log(arr);
+                    if (arr && arr.length > 0) {
+                      arr.forEach(element => {
+                        if (element.dueDate != null) {
+                          element.dueDate = element.dueDate.split("T")[0];
+                        }
+                        if (element.completeDate != null) {
+                          element.completeDate = element.completeDate.split(
+                            "T"
+                          )[0];
+                        }
+                      });
+                    }
 
                     resolve({
                       data: arr,
@@ -105,7 +106,8 @@ export default function ActivityTable(props) {
               }
             ]}
           />
-        </React.Fragment>)}
+        </React.Fragment>
+      )}
     </UserContext.Consumer>
   );
 }
