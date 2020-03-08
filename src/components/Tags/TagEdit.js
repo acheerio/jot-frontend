@@ -79,13 +79,10 @@ export default function TagEdit(props) {
         Authorization: "Bearer " + value.user.jwt
       }
     })
-      .then(response => {
+      .then(() => {
         tableRef.current && tableRef.current.onQueryChange();
         props.setTagView("TagAdd");
       })
-      .then(response => {
-        console.log("success!");
-      });
   }
 
   // Function to update record:

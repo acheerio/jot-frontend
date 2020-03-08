@@ -110,13 +110,10 @@ export default function ActivityAdd(props) {
         Authorization: "Bearer " + value.user.jwt
       }
     })
-      .then(response => {
+      .then(() => {
         tableRef.current && tableRef.current.onQueryChange();
         props.setActivityView("ActivityFind");
       })
-      .then(response => {
-        console.log("success!");
-      });
   }
 
   // Function to update record:

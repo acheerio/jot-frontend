@@ -154,8 +154,6 @@ export default function ContactEdit(props) {
           }
         }
       );
-      let data = await response.json();
-      return data;
     }
     updateRequest().then(() => {
       props.setContactView("ContactFind");
