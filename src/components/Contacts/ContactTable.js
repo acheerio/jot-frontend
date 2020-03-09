@@ -61,7 +61,7 @@ export default function ContactTable(props) {
             data={query =>
               new Promise((resolve, reject) => {
                 let url = endpoint + props.apiRoute;
-                url += "userId=" + userContext.user.userId;
+                // url += "userId=" + userContext.user.userId;
                 url += "&sortField=" + props.sortField;
                 url += "&sortDirection=ASC";
                 url += "&pageSize=" + query.pageSize;
