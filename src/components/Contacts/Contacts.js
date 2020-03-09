@@ -1,12 +1,13 @@
 import React from "react";
-import clsx from "clsx";
 
-import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
 import ContactFind from "./ContactFind";
 import ContactTable from "./ContactTable";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+
 import ContactAdd from "./ContactAdd";
 import ContactEdit from "./ContactEdit";
 import { tableRef } from "./ContactTable";
@@ -27,26 +28,24 @@ const useStyles = makeStyles(theme => ({
 export default function Contacts() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  let contactViewComponent = null;
 
-  // Code to set currently selected contact:
   const [selectedContactId, setSelectedContactId] = React.useState(0);
-
-  // Determine data table route
   const [apiRoute, setApiRoute] = React.useState("contacts/all?");
-  const [sortDirection, setSortDirection] = React.useState("contactId");
+  const [sortField, setSortField] = React.useState("firstName");
+  const [contactView, setContactView] = React.useState("ContactFind");
+
   const refreshTable = newRoute => {
     setApiRoute(newRoute);
     tableRef.current.onQueryChange();
   };
 
   const changeSort = newSort => {
-    setSortDirection(newSort);
+    setSortField(newSort);
     tableRef.current.onQueryChange();
   };
 
   // Code to control which page is shown to user
-  let contactViewComponent = null;
-  const [contactView, setContactView] = React.useState("ContactFind");
   switch (contactView) {
     case "ContactFind":
       contactViewComponent = (
@@ -54,7 +53,7 @@ export default function Contacts() {
           setContactView={setContactView}
           refreshTable={refreshTable}
           changeSort={changeSort}
-          sortDirection={sortDirection}
+          sortField={sortField}
         />
       );
       break;
@@ -89,7 +88,7 @@ export default function Contacts() {
               apiRoute={apiRoute}
               setApiRoute={setApiRoute}
               changeSort={changeSort}
-              sortDirection={sortDirection}
+              sortField={sortField}
             />
           </Paper>
         </Grid>

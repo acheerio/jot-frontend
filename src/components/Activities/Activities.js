@@ -1,13 +1,15 @@
 import React from "react";
+
 import clsx from "clsx";
-import ActivityTable from "./ActivityTable";
-import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import ActivityFind from "./ActivityFind";
-import ActivityEdit from "./ActivityEdit";
+import { makeStyles } from "@material-ui/core/styles";
+
 import ActivityAdd from "./ActivityAdd";
+import ActivityEdit from "./ActivityEdit";
+import ActivityFind from "./ActivityFind";
+import ActivityTable from "./ActivityTable";
 import { tableRef } from "../Activities/ActivityTable";
 
 const useStyles = makeStyles(theme => ({
@@ -26,9 +28,12 @@ const useStyles = makeStyles(theme => ({
 export default function Activities() {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  let activityViewComponent = null;
 
   const [apiRoute, setApiRoute] = React.useState("activities/all?");
   const [sortField, setSortField] = React.useState("notes");
+  const [selectedActivityId, setSelectedActivityId] = React.useState(0);
+  const [activityView, setActivityView] = React.useState("ActivityFind");
 
   const changeSort = newSortField => {
     setSortField(newSortField);
@@ -39,10 +44,7 @@ export default function Activities() {
     setApiRoute(newRoute);
     tableRef.current.onQueryChange();
   };
-  const [selectedActivityId, setSelectedActivityId] = React.useState(0);
 
-  let activityViewComponent = null;
-  const [activityView, setActivityView] = React.useState("ActivityFind");
   switch (activityView) {
     case "ActivityFind":
       activityViewComponent = (

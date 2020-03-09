@@ -1,13 +1,15 @@
 import React, { useContext } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import { tableRef } from "../Activities/ActivityTable";
+
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+
+import { tableRef } from "../Activities/ActivityTable";
 import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
@@ -37,7 +39,6 @@ export default function ActivityAdd(props) {
   const classes = useStyles();
   const userContext = useContext(UserContext);
 
-  // Manage form to add new record
   const [state, setState] = React.useState({
     type: "Task",
     notes: "",

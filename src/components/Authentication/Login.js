@@ -1,13 +1,15 @@
+import React, { useEffect, useContext } from "react";
+
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Cookies from "js-cookie";
 import Grid from "@material-ui/core/Grid";
 import jwt_decode from "jwt-decode";
 import Paper from "@material-ui/core/Paper";
-import React, { useEffect, useContext } from "react";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+
 import { UserContext } from "../../userContext";
 
 /* global gapi */
@@ -33,11 +35,11 @@ export default function Login() {
 
   const classes = useStyles();
 
-  const value = useContext(UserContext);
+  const userContext = useContext(UserContext);
   const { dispatch } = useContext(UserContext);
   console.log("in Login function / component");
   console.log("logged in status from context");
-  console.log(value.user.loggedIn);
+  console.log(userContext.user.loggedIn);
 
   useEffect(() => {
     if (gapi) {
@@ -123,13 +125,13 @@ export default function Login() {
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <UserContext.Consumer>
-              {value => (
+              {userContext => (
                 <Typography variant="body1" component="div">
-                  <img alt="User" src={value.user.picUrl} />
-                  <div>First Name: {value.user.firstName}</div>
-                  <div>Last Name: {value.user.lastName}</div>
-                  <div>Email: {value.user.email}</div>
-                  <div>UserId: {value.user.userId}</div>
+                  <img alt="User" src={userContext.user.picUrl} />
+                  <div>First Name: {userContext.user.firstName}</div>
+                  <div>Last Name: {userContext.user.lastName}</div>
+                  <div>Email: {userContext.user.email}</div>
+                  <div>UserId: {userContext.user.userId}</div>
                   <Link to="/" label="Dashboard">
                     Dashboard
                   </Link>

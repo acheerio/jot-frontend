@@ -1,11 +1,13 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import TagTable from "./TagTable";
-import TagAdd from "./TagAdd";
-import TagEdit from "./TagEdit";
+
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+
+import TagAdd from "./TagAdd";
+import TagEdit from "./TagEdit";
+import TagTable from "./TagTable";
 
 const useStyles = makeStyles(theme => ({
   container: {

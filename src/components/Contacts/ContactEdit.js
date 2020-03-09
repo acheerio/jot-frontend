@@ -1,13 +1,15 @@
 import React, { useContext } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
+import Grid from "@material-ui/core/Grid";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+
 import { tableRef } from "./ContactTable";
 import { UserContext } from "../../userContext";
 
@@ -47,21 +49,26 @@ const MenuProps = {
 
 export default function ContactEdit(props) {
   const classes = useStyles();
+  const userContext = useContext(UserContext);
+
+  const [state, setState] = React.useState({
+    googleId: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    organization: "",
+    role: ""
+  });
   const [selectedTags, setSelectedTags] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
 
   const handleChange = event => {
-    setSelectedTags(event.target.value);
+    setState({
+      ...state,
+      [event.target.name]: event.target.value
+    });
   };
-
-  const [googleId, setGoogleId] = React.useState("");
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phoneNumber, setPhoneNumber] = React.useState("");
-  const [organization, setOrganization] = React.useState("");
-  const [role, setRole] = React.useState("");
-  const [tags, setTags] = React.useState([]);
-  const userContext = useContext(UserContext);
 
   React.useEffect(() => {
     async function fetchData() {
@@ -70,7 +77,7 @@ export default function ContactEdit(props) {
         endpoint +
           "attributes/all?userId=" +
           userContext.user.userId +
-          "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
+          "&pageSize=50&pageNum=0&sortField=title&sortDirection=ASC",
         {
           method: "GET",
           headers: {
@@ -94,13 +101,16 @@ export default function ContactEdit(props) {
         }
       );
       const contactData = await contactResponse.json();
-      setGoogleId(contactData.googleId);
-      setFirstName(contactData.firstName);
-      setLastName(contactData.lastName);
-      setEmail(contactData.emailAddress);
-      setPhoneNumber(contactData.phoneNumber);
-      setOrganization(contactData.organization);
-      setRole(contactData.role);
+      setState({
+        googleId: contactData.googleId,
+        firstName: contactData.firstName,
+        lastName: contactData.lastName,
+        email: contactData.emailAddress,
+        phoneNumber: contactData.phoneNumber,
+        organization: contactData.organization,
+        role: contactData.role
+      });
+
       // Only add tags to selected array if they are part of user's attributes
       // Check needed due to test dataset inconsistencies, may not be necessary later
       let initialSelectedAttributes = [];
@@ -114,7 +124,6 @@ export default function ContactEdit(props) {
     fetchData();
   }, [props.selectedContactId, userContext.user.jwt, userContext.user.userId]);
 
-  // Function to update record:
   const updateContact = () => {
     async function updateRequest() {
       let attributeIdParams = "";
@@ -127,25 +136,25 @@ export default function ContactEdit(props) {
           props.selectedContactId +
           "?" +
           "googleId=" +
-          googleId +
+          state.googleId +
           "&" +
           "firstName=" +
-          firstName +
+          state.firstName +
           "&" +
           "lastName=" +
-          lastName +
+          state.lastName +
           "&" +
           "emailAddress=" +
-          email +
+          state.email +
           "&" +
           "phoneNumber=" +
-          phoneNumber +
+          state.phoneNumber +
           "&" +
           "organization=" +
-          organization +
+          state.organization +
           "&" +
           "role=" +
-          role +
+          state.role +
           attributeIdParams,
         {
           method: "PUT",
@@ -161,18 +170,14 @@ export default function ContactEdit(props) {
     });
   };
 
-  // Function to update record:
   const deleteContact = () => {
     async function deleteRequest() {
-      await fetch(
-        endpoint + "contacts/delete/" + props.selectedContactId,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + userContext.user.jwt
-          }
+      await fetch(endpoint + "contacts/delete/" + props.selectedContactId, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + userContext.user.jwt
         }
-      );
+      });
     }
     deleteRequest().then(() => {
       props.setContactView("ContactFind");
@@ -180,60 +185,58 @@ export default function ContactEdit(props) {
     });
   };
 
-  // Function to delete record:
-
   return (
     <form>
       <Grid container spacing={3} className={classes.root}>
         <Grid container item lg={6} md={6} sm={12} justify="center" spacing={2}>
           <Grid item xs={12}>
             <TextField
-              id="firstName"
+              name="firstName"
               label="First Name"
-              value={firstName}
-              onChange={e => setFirstName(e.target.value)}
+              value={state.firstName}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="lastName"
+              name="lastName"
               label="Last Name"
-              value={lastName}
-              onChange={e => setLastName(e.target.value)}
+              value={state.lastName}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="email"
+              name="email"
               label="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              value={state.email}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="phoneNumber"
+              name="phoneNumber"
               label="Phone Number"
-              value={phoneNumber}
-              onChange={e => setPhoneNumber(e.target.value)}
+              value={state.phoneNumber}
+              onChange={handleChange}
             />
           </Grid>
         </Grid>
         <Grid container item lg={6} md={6} sm={12} spacing={2}>
           <Grid item xs={12}>
             <TextField
-              id="organization"
+              name="organization"
               label="Organization"
-              value={organization}
-              onChange={e => setOrganization(e.target.value)}
+              value={state.organization}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
-              id="role"
+              name="role"
               label="Role"
-              value={role}
-              onChange={e => setRole(e.target.value)}
+              value={state.role}
+              onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -243,13 +246,7 @@ export default function ContactEdit(props) {
               id="demo-mutiple-chip"
               multiple
               value={selectedTags}
-              onChange={handleChange}
-              onClose={() => {
-                console.log("Selected tags: ");
-                console.log(selectedTags);
-                console.log("All tags: ");
-                console.log(tags);
-              }}
+              onChange={(event) => {setSelectedTags(event.target.value)}}
               input={<Input id="select-multiple-chip" />}
               renderValue={selected => (
                 <div className={classes.chips}>
@@ -276,7 +273,6 @@ export default function ContactEdit(props) {
             className={classes.margin}
             onClick={() => {
               updateContact();
-              console.log("Updated contact ");
               props.setContactView("ContactFind");
             }}
           >
@@ -299,7 +295,6 @@ export default function ContactEdit(props) {
             className={classes.margin}
             onClick={() => {
               deleteContact();
-              console.log("Deleted contact ");
               props.setContactView("ContactFind");
             }}
           >

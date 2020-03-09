@@ -1,4 +1,5 @@
-import React from "react";
+import React, { forwardRef } from "react";
+
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
@@ -7,9 +8,9 @@ import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
 import MaterialTable from "material-table";
 import Search from "@material-ui/icons/Search";
-import { forwardRef } from "react";
-import { UserContext } from "../../userContext";
 import Edit from "@material-ui/icons/Edit";
+
+import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
 const endpoint = "http://localhost:5000/";
@@ -46,7 +47,7 @@ export default function TagTable(props) {
             options={{
               pageSize: 5,
               initialPage: 0,
-              defaultSort: "desc",
+              sorting: false,
               search: false
             }}
             data={query =>
