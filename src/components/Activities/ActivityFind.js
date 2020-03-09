@@ -1,14 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import SearchIcon from "@material-ui/icons/Search";
+
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import Button from "@material-ui/core/Button";
+import FormControl from "@material-ui/core/FormControl";
+import Grid from "@material-ui/core/Grid";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
+import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,7 +57,7 @@ export default function ActivityFind(props) {
   return (
     <div>
       <Grid container spacing={1}>
-        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <form className={classes.root} noValidate autoComplete="off">
             <TextField
               id="search-activities"
@@ -84,7 +85,7 @@ export default function ActivityFind(props) {
           </form>
         </Grid>
 
-        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">
               Filter By Type
@@ -102,7 +103,7 @@ export default function ActivityFind(props) {
           </FormControl>
         </Grid>
 
-        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Sort Field</InputLabel>
             <Select
@@ -121,7 +122,7 @@ export default function ActivityFind(props) {
           </FormControl>
         </Grid>
 
-        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <Button
             variant="contained"
             color="primary"

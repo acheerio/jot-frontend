@@ -1,11 +1,13 @@
 import React, { useContext } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
 import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+
 import { tableRef } from "../Activities/ActivityTable";
 import { UserContext } from "../../userContext";
 
@@ -36,7 +38,6 @@ export default function ActivityAdd(props) {
   const classes = useStyles();
   const userContext = useContext(UserContext);
 
-  // Manage form to add new record
   const [state, setState] = React.useState({
     type: "",
     notes: "",
@@ -109,15 +110,12 @@ export default function ActivityAdd(props) {
   // Function to update record:
   const handleDelete = () => {
     async function deleteRequest() {
-      await fetch(
-        endpoint + "activities/delete/" + props.selectedActivityId,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + userContext.user.jwt
-          }
+      await fetch(endpoint + "activities/delete/" + props.selectedActivityId, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + userContext.user.jwt
         }
-      );
+      });
     }
     deleteRequest().then(() => {
       props.setActivityView("ActivityFind");

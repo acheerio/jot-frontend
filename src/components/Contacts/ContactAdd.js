@@ -1,13 +1,15 @@
 import React, { useContext } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
+import Grid from "@material-ui/core/Grid";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+
 import { tableRef } from "./ContactTable";
 import { UserContext } from "../../userContext";
 
@@ -47,6 +49,8 @@ const MenuProps = {
 
 export default function ContactAdd(props) {
   const classes = useStyles();
+  const userContext = useContext(UserContext);
+
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [state, setState] = React.useState({
@@ -70,20 +74,18 @@ export default function ContactAdd(props) {
     }
   };
 
-  const value = useContext(UserContext);
-
   React.useEffect(() => {
     async function fetchData() {
       // Get possible tags for user
       const attributesResponse = await fetch(
         endpoint +
           "attributes/all?userId=" +
-          value.user.userId +
+          userContext.user.userId +
           "&pageSize=100&pageNum=0&sortField=title&sortDirection=ASC",
         {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + value.user.jwt
+            Authorization: "Bearer " + userContext.user.jwt
           }
         }
       );
@@ -92,18 +94,19 @@ export default function ContactAdd(props) {
       setTags(initialAttributes);
     }
     fetchData();
-  }, [value.user.userId, value.user.jwt]);
+  }, [userContext.user.userId, userContext.user.jwt]);
 
   function handleCancel(e) {
     props.setContactView("ContactFind");
   }
+
   function handleAdd(e) {
     let attributeIdParams = "";
     selectedTags.forEach(tag => {
       attributeIdParams += "&attributeTitle=" + tag;
     });
     let url = endpoint + "contacts/add?";
-    url += "userId=" + value.user.userId;
+    url += "userId=" + userContext.user.userId;
     url += "&googleId=fakeGoogleId";
     url += "&firstName=" + state.firstName;
     url += "&lastName=" + state.lastName;
@@ -115,7 +118,7 @@ export default function ContactAdd(props) {
     fetch(url, {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + value.user.jwt
+        Authorization: "Bearer " + userContext.user.jwt
       }
     }).then(() => {
       tableRef.current && tableRef.current.onQueryChange();

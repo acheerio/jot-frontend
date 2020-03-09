@@ -1,3 +1,5 @@
+import React, { useContext } from "react";
+
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
@@ -7,11 +9,11 @@ import Grid from "@material-ui/core/Grid";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import React, { useContext } from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
+
 import { UserContext } from "../../userContext";
 
 const endpoint = "http://localhost:5000/";
@@ -52,13 +54,12 @@ const MenuProps = {
 };
 
 let tagsHash = {};
-const sorts = ["First Name", "Last Name", "Organization", "Role"];
+const sorts = ["firstName", "lastName", "organization", "role"];
 const sortsHash = {
-  "First Name": "firstName",
-  "Last Name": "lastName",
-  Organization: "organization",
-  Role: "role",
-  "Update Date": "updateDate"
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "organization": "Organization",
+  "role": "Role"
 };
 
 export default function ContactFind(props) {
@@ -74,7 +75,7 @@ export default function ContactFind(props) {
   };
 
   const handleSort = event => {
-    props.changeSort(sortsHash[event.target.value]);
+    props.changeSort(event.target.value);
   };
 
   React.useEffect(() => {
@@ -83,7 +84,7 @@ export default function ContactFind(props) {
       const attributesResponse = await fetch(
         endpoint +
           "attributes/all?userId=" +
-        userContext.user.userId +
+          userContext.user.userId +
           "&pageSize=20&pageNum=0&sortField=title&sortDirection=ASC",
         {
           method: "GET",
@@ -115,7 +116,7 @@ export default function ContactFind(props) {
   return (
     <div>
       <Grid container spacing={1}>
-        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <form className={classes.root} noValidate autoComplete="off">
             <TextField
               id="search-contacts"
@@ -152,12 +153,12 @@ export default function ContactFind(props) {
                 document.getElementById("search-contacts").value = "";
               }}
             >
-              Clear
+              Clear Search
             </Button>
           </form>
         </Grid>
 
-        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-multiple-chip-label">
               Filter By Tags
@@ -177,6 +178,8 @@ export default function ContactFind(props) {
                   props.refreshTable(
                     "contacts/byAttributes?attributeId=" + list + "&"
                   );
+                } else {
+                  props.refreshTable("contacts/all?");
                 }
               }}
               input={<Input id="select-multiple-chip" />}
@@ -196,24 +199,26 @@ export default function ContactFind(props) {
               ))}
             </Select>
           </FormControl>
+        </Grid>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-multiple-chip-label">Sort by</InputLabel>
             <Select
               labelId="demo-multiple-chip-label"
               id="demo-multiple-chip"
-              value={props.selectedSort}
+              value={props.sortField}
               onChange={handleSort}
             >
               {sorts.map(sort => (
                 <MenuItem key={sort} value={sort}>
-                  {sort}
+                  {sortsHash[sort]}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
 
-        <Grid item lg={4} m={4} xs={12} style={{ textAlign: "center" }}>
+        <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <Button
             variant="contained"
             color="primary"

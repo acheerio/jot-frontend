@@ -1,6 +1,5 @@
 import React from "react";
-import { forwardRef } from "react";
-import MaterialTable from "material-table";
+
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
@@ -8,8 +7,11 @@ import Clear from "@material-ui/icons/Clear";
 import Edit from "@material-ui/icons/Edit";
 import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
+import MaterialTable from "material-table";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
+import { forwardRef } from "react";
+
 import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
@@ -52,7 +54,6 @@ export default function ContactTable(props) {
             options={{
               pageSize: 5,
               initialPage: 0,
-              defaultSort: "desc",
               search: false,
               exportButton: true,
               sorting: false
@@ -61,7 +62,7 @@ export default function ContactTable(props) {
               new Promise((resolve, reject) => {
                 let url = endpoint + props.apiRoute;
                 url += "userId=" + userContext.user.userId;
-                url += "&sortField=" + props.sortDirection;
+                url += "&sortField=" + props.sortField;
                 url += "&sortDirection=ASC";
                 url += "&pageSize=" + query.pageSize;
                 url += "&pageNum=" + query.page;

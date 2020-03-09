@@ -1,6 +1,5 @@
-import React from "react";
-import { forwardRef } from "react";
-import MaterialTable from "material-table";
+import React, { forwardRef } from "react";
+
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
@@ -8,7 +7,9 @@ import Clear from "@material-ui/icons/Clear";
 import Edit from "@material-ui/icons/Edit";
 import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
+import MaterialTable from "material-table";
 import Search from "@material-ui/icons/Search";
+
 import { UserContext } from "../../userContext";
 
 // const endpoint = "http://api.jot-app.com/";
@@ -31,7 +32,7 @@ export let tableRef = React.createRef();
 export default function ActivityTable(props) {
   return (
     <UserContext.Consumer>
-      {value => (
+      {userContext => (
         <React.Fragment>
           <MaterialTable
             tableRef={tableRef}
@@ -49,7 +50,7 @@ export default function ActivityTable(props) {
             options={{
               pageSize: 5,
               initialPage: 0,
-              defaultSort: "desc",
+              sorting: false,
               search: false
             }}
             data={query =>
@@ -57,7 +58,7 @@ export default function ActivityTable(props) {
                 query.orderBy = props.sortField;
                 query.orderDirection = "asc";
                 let url = endpoint + props.apiRoute;
-                url += "userId=" + value.user.userId;
+                url += "userId=" + userContext.user.userId;
                 url += "&sortField=" + query.orderBy;
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
@@ -65,7 +66,7 @@ export default function ActivityTable(props) {
                 fetch(url, {
                   method: "GET",
                   headers: {
-                    Authorization: "Bearer " + value.user.jwt
+                    Authorization: "Bearer " + userContext.user.jwt
                   }
                 })
                   .then(response => response.json())
