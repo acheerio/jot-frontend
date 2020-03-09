@@ -7,6 +7,7 @@ import { UserContext } from './userContext';
 import { userReducer, initialState, init } from './util/userReducer'
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
+import isExpired from './util/TokenRefresh';
 
 function App() {
 
@@ -17,14 +18,20 @@ function App() {
       let decoded;
       try {
           decoded = jwt_decode(jwt);
-          dispatch({
-              type: 'updateFromJwt',
-              loggedIn: true,
-              firstName: decoded.firstName,
-              lastName: decoded.lastName,
-              email: decoded.emailAddress,
-              userId: decoded.userId,
-              jwt: jwt });
+          if (isExpired(decoded.exp)) {
+              Cookies.remove('jwt');
+          }
+          else {
+              dispatch({
+                  type: 'updateFromJwt',
+                  loggedIn: true,
+                  firstName: decoded.firstName,
+                  lastName: decoded.lastName,
+                  email: decoded.emailAddress,
+                  userId: decoded.userId,
+                  jwt: jwt
+              });
+          }
       } catch (err) {
         console.log("Invalid JWT");
         console.log(err);
