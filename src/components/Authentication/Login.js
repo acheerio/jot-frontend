@@ -83,24 +83,24 @@ export default function Login() {
   }
 
   return (
-      <Grid container item style={{ height: "100vh", backgroundImage: `url(${Image})`, backgroundColor: '#ecf9fe' }}>
+      <Grid container item style={{ height: "100vh", backgroundImage: `url(${Image})` }}>
         <Grid container item alignItems="center" justify="center" style={{ height: "100vh", backgroundColor: "transparent"}}>
           <Grid container item xs={4} alignItems="stretch" justify="center" style={{ height: "300px", width: "600px", opacity: "1" }}>
             <Grid container item alignItems="stretch" item xs={12} >
                 <Paper style={{ width: "100%", opacity: '.9'}}>
                   <Grid container item xs={12} style={{ width: "100%", height: "100%" }}>
                     <Grid container item alignItems="center" justify="center" xs={6}>
-                      <Grid container item xs={12} alignItems="flex-end" justify="center" style={{ height: "35%", backgroundColor: "transparent" }}>
+                      <Grid container item xs={12} alignItems="flex-end" justify="center" style={{ height: "35%" }}>
                         <Typography variant="body1" style={{ fontWeight: "bold" }}>Welcome to</Typography>
                       </Grid>
-                      <Grid container item xs={12} alignItems="flex-start" justify="center" style={{ height: "75%", backgroundColor: "transparent" }}>
+                      <Grid container item xs={12} alignItems="flex-start" justify="center" style={{ height: "75%" }}>
                         <Typography variant="h1">Jot</Typography>
                       </Grid>
                     </Grid>
-                    <Grid container item alignItems="center" justify="center" xs={6} style={{ padding: "16px" }}>
+                    <Grid container item alignItems="center" justify="center" xs={6} style={{ padding: "20px" }}>
                       <Grid container item justify="center" xs={12} >
                         <Typography align="center" paragraph style={{ fontWeight: "bold" }} >Jot helps you manage your personal and professional relationships with a clean and simple CMS.</Typography>
-                        <Typography style={{ fontWeight: "bold" }} >Own your data.</Typography>
+                        <Typography style={{ fontWeight: "bold", paddingBottom: "0px" }}>Own your data.</Typography>
                       </Grid>
                       <Grid container item justify="center" xs={12}>
                         <Box component="div" id="g-signin2" className="g-signin2"></Box>
@@ -114,3 +114,5 @@ export default function Login() {
       </Grid>
   );
 }
+
+// Photo by Green Chameleon on Unsplash
