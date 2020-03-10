@@ -7,7 +7,6 @@ import { UserContext } from './userContext';
 import { userReducer, initialState, init } from './util/userReducer'
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
-import isExpired from './util/TokenRefresh';
 
 function App() {
 
@@ -18,7 +17,7 @@ function App() {
       let decoded;
       try {
           decoded = jwt_decode(jwt);
-          if (isExpired(decoded.exp)) {
+          if (decoded.jwt <= new Date().getTime()) {
               Cookies.remove('jwt');
           }
           else {

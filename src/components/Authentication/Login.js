@@ -9,43 +9,21 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-
+import { flexbox } from '@material-ui/system';
 import { UserContext } from "../../userContext";
 
 /* global gapi */
 
-const useStyles = makeStyles(theme => ({
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-    display: "flex"
-  },
-  paper: {
-    padding: theme.spacing(4),
-    overflow: "auto"
-    // background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
-  },
-  typography: {
-    textAlign: "center"
-  }
-}));
-
 export default function Login() {
   let endpoint = "http://localhost:5000/login";
 
-  const classes = useStyles();
-
-  const userContext = useContext(UserContext);
   const { dispatch } = useContext(UserContext);
-  console.log("in Login function / component");
-  console.log("logged in status from context");
-  console.log(userContext.user.loggedIn);
 
   useEffect(() => {
     if (gapi) {
       gapi.signin2.render("g-signin2", {
         scope: "openid profile email https://www.googleapis.com/auth/contacts",
-        width: 200,
+        width: 160,
         height: 50,
         longtitle: false,
         theme: "light",
@@ -104,43 +82,34 @@ export default function Login() {
   }
 
   return (
-    <Container maxWidth="lg">
-      <Grid className={classes.container} container spacing={3}>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Typography
-              variant="h2"
-              component="h2"
-              className={classes.typography}
-            >
-              Sign up for Jot today!
-            </Typography>
-          </Paper>
+      <Container maxWidth="lg" style={{ height: "100vh", backgroundColor: '#ecf9fe'}}>
+        <Grid container item alignItems="center" justify="center" style={{ height: "100vh" }}>
+          <Grid container item xs={4} alignItems="stretch" justify="center" style={{ height: "300px", width: "600px"}}>
+            <Grid container item alignItems="stretch" item xs={12}>
+                <Paper style={{ width: "100%" }}>
+                  <Grid container item xs={12} style={{ width: "100%", height: "100%" }}>
+                    <Grid container item alignItems="center" justify="center" xs={6}>
+                      <Grid container item xs={12} alignItems="flex-end" justify="center" style={{ height: "35%" }}>
+                        <Typography variant="body1">Welcome to</Typography>
+                      </Grid>
+                      <Grid container item xs={12} alignItems="flex-start" justify="center" style={{ height: "75%" }}>
+                        <Typography variant="h1">Jot</Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid container item alignItems="center" justify="center" xs={6} style={{ padding: "16px"}}>
+                      <Grid container item justify="center" xs={12}>
+                        <Typography align="center" paragraph>Jot helps you manage your personal and professional relationships with a clean and simple CMS.</Typography>
+                        <Typography>Own your data.</Typography>
+                      </Grid>
+                      <Grid container item justify="center" xs={12}>
+                        <Box component="div" id="g-signin2" className="g-signin2"></Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Paper>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={5}></Grid>
-        <Grid item xs={2}>
-          <Box component="div" id="g-signin2" className="g-signin2"></Box>
-        </Grid>
-        <Grid item xs={5}></Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <UserContext.Consumer>
-              {userContext => (
-                <Typography variant="body1" component="div">
-                  <img alt="User" src={userContext.user.picUrl} />
-                  <div>First Name: {userContext.user.firstName}</div>
-                  <div>Last Name: {userContext.user.lastName}</div>
-                  <div>Email: {userContext.user.email}</div>
-                  <div>UserId: {userContext.user.userId}</div>
-                  <Link to="/" label="Dashboard">
-                    Dashboard
-                  </Link>
-                </Typography>
-              )}
-            </UserContext.Consumer>
-          </Paper>
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
   );
 }
