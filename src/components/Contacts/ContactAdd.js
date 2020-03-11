@@ -79,9 +79,7 @@ export default function ContactAdd(props) {
       // Get possible tags for user
       const attributesResponse = await fetch(
         endpoint +
-          "attributes/all?userId=" +
-          userContext.user.userId +
-          "&pageSize=100&pageNum=0&sortField=title&sortDirection=ASC",
+          "attributes/all?pageSize=100&pageNum=0&sortField=title&sortDirection=ASC",
         {
           method: "GET",
           headers: {
@@ -106,7 +104,6 @@ export default function ContactAdd(props) {
       attributeIdParams += "&attributeTitle=" + tag;
     });
     let url = endpoint + "contacts/add?";
-    //url += "userId=" + userContext.user.userId;
     url += "googleId=";
     url += "&firstName=" + state.firstName;
     url += "&lastName=" + state.lastName;

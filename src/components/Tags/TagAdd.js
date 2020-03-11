@@ -57,8 +57,7 @@ export default function TagAdd(props) {
 
   function handleAdd() {
     let url = endpoint + "attributes/add?";
-    url += "userId=" + userContext.user.userId;
-    url += "&title=" + state.title;
+    url += "title=" + state.title;
     url += "&description=" + state.description;
     console.log(url);
     fetch(url, {

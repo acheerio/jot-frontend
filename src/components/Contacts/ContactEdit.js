@@ -75,9 +75,7 @@ export default function ContactEdit(props) {
       // First get possible tags for user
       const attributesResponse = await fetch(
         endpoint +
-          "attributes/all?userId=" +
-          userContext.user.userId +
-          "&pageSize=50&pageNum=0&sortField=title&sortDirection=ASC",
+          "attributes/all?pageSize=50&pageNum=0&sortField=title&sortDirection=ASC",
         {
           method: "GET",
           headers: {

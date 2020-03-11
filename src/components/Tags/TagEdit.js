@@ -71,8 +71,7 @@ export default function TagEdit(props) {
   function handleEdit() {
     let url = endpoint + "attributes/update/";
     url += props.selectedTagId + "?";
-    url += "userId=" + userContext.user.userId;
-    url += "&title=" + state.title;
+    url += "title=" + state.title;
     url += "&description=" + state.description;
     console.log(url);
     fetch(url, {

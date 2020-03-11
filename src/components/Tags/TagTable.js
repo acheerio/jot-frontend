@@ -55,8 +55,7 @@ export default function TagTable(props) {
                 query.orderBy = "title";
                 query.orderDirection = "asc";
                 let url = endpoint + "attributes/all?";
-                url += "userId=" + userContext.user.userId;
-                url += "&sortField=" + query.orderBy;
+                url += "sortField=" + query.orderBy;
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
                 url += "&pageNum=" + query.page;
