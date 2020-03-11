@@ -106,8 +106,8 @@ export default function ContactAdd(props) {
       attributeIdParams += "&attributeTitle=" + tag;
     });
     let url = endpoint + "contacts/add?";
-    url += "userId=" + userContext.user.userId;
-    url += "&googleId=fakeGoogleId";
+    //url += "userId=" + userContext.user.userId;
+    url += "googleId=";
     url += "&firstName=" + state.firstName;
     url += "&lastName=" + state.lastName;
     url += "&emailAddress=" + state.email;

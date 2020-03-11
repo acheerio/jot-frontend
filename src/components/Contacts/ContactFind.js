@@ -202,7 +202,7 @@ export default function ContactFind(props) {
         </Grid>
         <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-multiple-chip-label">Sort by</InputLabel>
+            <InputLabel id="demo-multiple-chip-label">Sort By</InputLabel>
             <Select
               labelId="demo-multiple-chip-label"
               id="demo-multiple-chip"

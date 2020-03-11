@@ -105,7 +105,7 @@ export default function ActivityFind(props) {
 
         <Grid item lg={3} m={3} xs={12} style={{ textAlign: "center" }}>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Sort Field</InputLabel>
+            <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"

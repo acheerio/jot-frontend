@@ -52,7 +52,7 @@ export default function ActivityAdd(props) {
   React.useEffect(() => {
     async function fetchData() {
       const contactsResponse = await fetch(
-        endpoint + "contacts/IdAndNames?userId=" + userContext.user.userId,
+        endpoint + "contacts/names",
         {
           method: "GET",
           headers: {
@@ -90,8 +90,7 @@ export default function ActivityAdd(props) {
 
   function handleAdd() {
     let url = endpoint + "activities/add?";
-    url += "userId=" + userContext.user.userId;
-    url += "&type=" + state.type;
+    url += "type=" + state.type;
     url += "&notes=" + state.notes;
     url += "&status=" + state.status;
     if (state.completeDate != null && state.dueDate !== "null") {
@@ -198,7 +197,7 @@ export default function ActivityAdd(props) {
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size="large"
           className={classes.margin}
           onClick={handleAdd}
         >
@@ -208,7 +207,7 @@ export default function ActivityAdd(props) {
       <Grid item xs={4}>
         <Button
           variant="contained"
-          size="small"
+          size="large"
           className={classes.margin}
           onClick={() => {
             props.setActivityView("ActivityFind");

@@ -58,8 +58,7 @@ export default function ActivityTable(props) {
                 query.orderBy = props.sortField;
                 query.orderDirection = "asc";
                 let url = endpoint + props.apiRoute;
-                url += "userId=" + userContext.user.userId;
-                url += "&sortField=" + query.orderBy;
+                url += "sortField=" + query.orderBy;
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
                 url += "&pageNum=" + query.page;
