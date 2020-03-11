@@ -39,7 +39,7 @@ export default function ActivityTable(props) {
             title="Activities"
             columns={[
               { title: "Activity ID", field: "activityId", hidden: true },
-              { title: "Associated Contact", field: "contact.fullName" },
+              { title: "Associated Contact", field: "fullNameContact" },
               { title: "Type", field: "type" },
               { title: "Description", field: "notes" },
               { title: "Status", field: "status" },
@@ -80,6 +80,13 @@ export default function ActivityTable(props) {
                           element.completeDate = element.completeDate.split(
                             "T"
                           )[0];
+                        }
+                        if (element.contact.constructor === Object) {
+                          element.fullNameContact = element.contact.fullName;
+                        } else if (element.contact.constructor === String) {
+                          element.fullNameContact = element.contact;
+                        } else {
+                          element.fullNameContact = '';
                         }
                       });
                     }
