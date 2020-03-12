@@ -29,8 +29,6 @@ export default function Login() {
   }, []);
 
   function onSignIn(googleUser) {
-    console.log("in onSignIn function");
-    // let profile = googleUser.getBasicProfile();
     const idToken = googleUser.getAuthResponse().id_token;
     const accessToken = googleUser.getAuthResponse().access_token;
 

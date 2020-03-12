@@ -21,7 +21,6 @@ function App() {
               Cookies.remove('jwt');
           }
           else {
-              console.log("Not expired")
               dispatch({
                   type: 'updateFromJwt',
                   loggedIn: true,
@@ -33,7 +32,7 @@ function App() {
               });
           }
       } catch (err) {
-        console.log("Invalid JWT");
+        console.log("Unable to login");
         console.log(err);
       }
   }

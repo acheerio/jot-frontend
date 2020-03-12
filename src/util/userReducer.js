@@ -16,7 +16,6 @@ export function init(value) {
 export function userReducer(state, action) {
     switch (action.type) {
         case 'updateFromJwt':
-            console.log("updating state, user is logged in");
             return {
                 firstName: action.firstName,
                 lastName: action.lastName,
