@@ -17,10 +17,11 @@ function App() {
       let decoded;
       try {
           decoded = jwt_decode(jwt);
-          if (decoded.jwt <= new Date().getTime()) {
+          if (decoded.exp <= new Date().getTime()) {
               Cookies.remove('jwt');
           }
           else {
+              console.log("Not expired")
               dispatch({
                   type: 'updateFromJwt',
                   loggedIn: true,
