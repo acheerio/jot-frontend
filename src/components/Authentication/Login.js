@@ -11,7 +11,7 @@ import Image from '../../img/hero.jpg';
 /* global gapi */
 
 export default function Login() {
-  let endpoint = "http://api.jot-app.com/";
+  let endpoint = "https://api.jot-app.com/";
 
   const { dispatch } = useContext(UserContext);
 

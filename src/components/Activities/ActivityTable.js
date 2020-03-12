@@ -12,7 +12,7 @@ import Search from "@material-ui/icons/Search";
 
 import { UserContext } from "../../userContext";
 
-const endpoint = "http://api.jot-app.com/";
+const endpoint = "https://api.jot-app.com/";
 //const endpoint = "http://localhost:5000/";
 
 const tableIcons = {
