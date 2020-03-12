@@ -11,7 +11,7 @@ import Image from '../../img/hero.jpg';
 /* global gapi */
 
 export default function Login() {
-  let endpoint = "https://api.jot-app.com/";
+  let endpoint = "https://api.jot-app.com";
 
   const { dispatch } = useContext(UserContext);
 
@@ -37,7 +37,9 @@ export default function Login() {
       idTokenString: idToken
     };
 
-    fetch(endpoint, {
+    const url = endpoint + "/login"
+
+    fetch(url, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       credentials: "omit", // include, *same-origin, omit
