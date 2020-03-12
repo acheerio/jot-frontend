@@ -133,7 +133,6 @@ export default function Dashboard() {
     // clear userContext
     // redirect to login page
     if (window.gapi) {
-      console.log("auth2");
       let auth2 = window.gapi.auth2.getAuthInstance();
       auth2.signOut().then(function () {
         dispatch({type: 'reset'});
