@@ -16,7 +16,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { UserContext } from "../../userContext";
 
-const endpoint = "http://localhost:5000/";
+const endpoint = "https://api.jot-app.com/";
 
 const useStyles = makeStyles(theme => ({
   root: {

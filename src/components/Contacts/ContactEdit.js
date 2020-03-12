@@ -13,8 +13,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { tableRef } from "./ContactTable";
 import { UserContext } from "../../userContext";
 
-// const endpoint = "http://api.jot-app.com/";
-const endpoint = "http://localhost:5000/";
+const endpoint = "https://api.jot-app.com/";
+//const endpoint = "http://localhost:5000/";
 
 const useStyles = makeStyles(theme => ({
   root: {
