@@ -199,38 +199,34 @@ export default function ActivityAdd(props) {
           />
         </Grid>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12}>
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size="large"
           className={classes.margin}
           onClick={handleEdit}
         >
           Save Changes
         </Button>
-      </Grid>
-      <Grid item xs={4}>
+        <Button
+            variant="contained"
+            size="large"
+            className={classes.margin}
+            onClick={() => {
+              props.setActivityView("ActivityFind");
+            }}
+        >
+          Return to Search
+        </Button>
         <Button
           variant="contained"
           color="secondary"
-          size="small"
+          size="large"
           className={classes.margin}
           onClick={handleDelete}
         >
           Delete Activity
-        </Button>
-      </Grid>
-      <Grid item xs={4}>
-        <Button
-          variant="contained"
-          size="small"
-          className={classes.margin}
-          onClick={() => {
-            props.setActivityView("ActivityFind");
-          }}
-        >
-          Return to Activity Search
         </Button>
       </Grid>
     </Grid>

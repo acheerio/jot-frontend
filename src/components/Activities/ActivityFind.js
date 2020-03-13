@@ -10,6 +10,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
+import ClearIcon from "@material-ui/icons/Clear";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -81,6 +82,20 @@ export default function ActivityFind(props) {
               }}
             >
               Search
+            </Button>
+            <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                className={classes.button}
+                startIcon={<ClearIcon />}
+                onClick={() => {
+                  props.refreshTable("activities/searchByNotes?searchVal=&");
+                  document.getElementById("search-activities").value = "";
+
+                }}
+            >
+              Clear Search
             </Button>
           </form>
         </Grid>
