@@ -59,7 +59,6 @@ export default function TagTable(props) {
                 url += "&sortDirection=" + query.orderDirection;
                 url += "&pageSize=" + query.pageSize;
                 url += "&pageNum=" + query.page;
-                console.log(url);
                 fetch(url, {
                   method: "GET",
                   headers: {

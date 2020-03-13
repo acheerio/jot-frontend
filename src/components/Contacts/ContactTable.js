@@ -58,6 +58,14 @@ export default function ContactTable(props) {
             }}
             data={query =>
               new Promise((resolve, reject) => {
+                if (
+                  props.apiRoute.startsWith(
+                    "contacts/byAttributes?attributeId="
+                  ) ||
+                  props.apiRoute.startsWith("contacts/searchByName?searchVal=")
+                ) {
+                  query.page = 0;
+                }
                 let url = endpoint + props.apiRoute;
                 url += "sortField=" + props.sortField;
                 url += "&sortDirection=ASC";

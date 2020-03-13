@@ -169,7 +169,7 @@ export default function ContactFind(props) {
               multiple
               value={selectedTag}
               onChange={handleChange}
-              onClick={() => {
+              onClose={() => {
                 if (tagsHash[selectedTag[0]] !== undefined) {
                   let list = [];
                   for (let i = 0; i < selectedTag.length; i++) {

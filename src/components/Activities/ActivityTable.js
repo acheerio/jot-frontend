@@ -55,6 +55,14 @@ export default function ActivityTable(props) {
             }}
             data={query =>
               new Promise((resolve, reject) => {
+                if (
+                  props.apiRoute.startsWith(
+                    "activities/byType?type="
+                  ) ||
+                  props.apiRoute.startsWith("activities/searchByNotes?searchVal=")
+                ) {
+                  query.page = 0;
+                }
                 query.orderBy = props.sortField;
                 query.orderDirection = "asc";
                 let url = endpoint + props.apiRoute;
