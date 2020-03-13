@@ -90,7 +90,7 @@ export default function ActivityFind(props) {
                 className={classes.button}
                 startIcon={<ClearIcon />}
                 onClick={() => {
-                  props.refreshTable("activities/searchByNotes?searchVal=&");
+                  props.refreshTable("activities/all?");
                   document.getElementById("search-activities").value = "";
 
                 }}

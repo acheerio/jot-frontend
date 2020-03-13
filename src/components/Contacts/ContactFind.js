@@ -147,7 +147,7 @@ export default function ContactFind(props) {
               className={classes.button}
               startIcon={<ClearIcon />}
               onClick={() => {
-                props.refreshTable("contacts/searchByName?searchVal=&");
+                props.refreshTable("contacts/all?");
                 document.getElementById("search-contacts").value = "";
                 setSelectedTag([]);
 
