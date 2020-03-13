@@ -128,7 +128,8 @@ export default function ActivityAdd(props) {
             <MenuItem value={"Task"}>Task</MenuItem>
           </Select>
         </Grid>
-        <Grid item xs={12}>
+        <Grid container item xs={12} justify="center" >
+          <Grid container item justify="center">
           <Autocomplete
             id="combo-box-demo"
             options={state.contacts}
@@ -145,6 +146,7 @@ export default function ActivityAdd(props) {
               />
             )}
           />
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <TextField name="notes" label="Description" onChange={handleChange} />
@@ -193,7 +195,7 @@ export default function ActivityAdd(props) {
           />
         </Grid>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12}>
         <Button
           variant="contained"
           color="primary"
@@ -203,8 +205,6 @@ export default function ActivityAdd(props) {
         >
           Add Activity
         </Button>
-      </Grid>
-      <Grid item xs={4}>
         <Button
           variant="contained"
           size="large"
@@ -213,7 +213,7 @@ export default function ActivityAdd(props) {
             props.setActivityView("ActivityFind");
           }}
         >
-          Return to Activity Search
+          Cancel
         </Button>
       </Grid>
     </Grid>
