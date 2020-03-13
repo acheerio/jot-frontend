@@ -129,7 +129,8 @@ export default function ActivityAdd(props) {
           </Select>
         </Grid>
         <Grid container item xs={12} justify="center" >
-          <Grid container item justify="center">
+          <Grid item xs={4}></Grid>
+          <Grid container item xs={4} justify="center">
           <Autocomplete
             id="combo-box-demo"
             options={state.contacts}
@@ -147,6 +148,7 @@ export default function ActivityAdd(props) {
             )}
           />
           </Grid>
+          <Grid item xs={4}></Grid>
         </Grid>
         <Grid item xs={12}>
           <TextField name="notes" label="Description" onChange={handleChange} />
