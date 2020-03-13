@@ -28,7 +28,6 @@ const tableIcons = {
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />)
 };
 export let tableRef = React.createRef();
 
@@ -55,7 +54,6 @@ export default function ContactTable(props) {
               pageSize: 5,
               initialPage: 0,
               search: false,
-              exportButton: true,
               sorting: false
             }}
             data={query =>
